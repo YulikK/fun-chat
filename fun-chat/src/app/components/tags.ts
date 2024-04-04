@@ -10,15 +10,8 @@ export const h1 = (className: string, textContent: string, ...children: BaseComp
 export const p = (className: string, textContent: string): BaseComponent =>
   new BaseComponent({ tag: 'p', className, textContent });
 
-// export const img = ({ src = '', alt = '', className = '', width = 0, height = 0 }): BaseComponent =>
-//   new BaseComponent({
-//     tag: 'img',
-//     className,
-//     src,
-//     alt,
-//     width,
-//     height
-//   });
+export const img = ({ src = '', alt = '', className = '', width = 0, height = 0 }): BaseComponent =>
+  new BaseComponent({tag: 'img', className, src, alt, width, height });
 
 export const a = (props: ElementProps<HTMLLinkElement>, ...children: BaseComponent[]): BaseComponent =>
   new BaseComponent({ ...props, tag: 'a' }, ...children);

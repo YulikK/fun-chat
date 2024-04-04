@@ -1,14 +1,16 @@
 export type Props<T extends HTMLElement = HTMLElement> = Partial<
   Omit<T, 'style' | 'dataset' | 'classList' | 'children' | 'tagName '>
   > & {
-  // type?: string;
-  // width?: number;
-  // height?: number;
-  // htmlFor?: T extends HTMLLabelElement ? string : never;
-  // checked?: T extends HTMLInputElement ? boolean : never;
-  // id?: string;
-  // placeholder?: string;
-  // value?: string | number;
+  type?: string;
+  src?: string;
+  alt?: string;
+  width?: number;
+  height?: number;
+  htmlFor?: T extends HTMLLabelElement ? string : never;
+  checked?: T extends HTMLInputElement ? boolean : never;
+  id?: string;
+  placeholder?: string;
+  value?: string | number;
   tag: keyof HTMLElementTagNameMap;
 };
 
@@ -34,7 +36,11 @@ export class BaseComponent {
   
   public appendChild(child: BaseComponent[]): void {
     child.forEach((el) => {
-      this.append(el);
+      if (el instanceof BaseComponent) {
+        this.append(el);
+      } else {
+        throw new Error('Child is not an instance of BaseComponent');
+      }
     });
   }
 
