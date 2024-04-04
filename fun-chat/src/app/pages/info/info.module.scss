@@ -1,0 +1,43 @@
+
+@import 'src/scss/constant.scss';
+@import 'src/scss/utils.scss';
+.pageWrapper {
+  width: 100%;
+}
+.welcomePage {
+  border-radius: 40px;
+  border: solid 1px #c1bfbf;
+  position: fixed;
+  margin: 2rem;
+}
+
+.wrapper {
+  padding-top: adaptive-size(60, 30);
+  padding-bottom: adaptive-size(60, 30);
+  padding-right: adaptive-size(100, 40);
+  padding-left: adaptive-size(100, 40);
+  display: flex;
+  flex-direction: column;
+}
+
+.tittle {
+  font-family: $font-stack;
+  font-size: adaptive-size(36, 20);
+  font-weight: 400;
+  line-height: 41px;
+  letter-spacing: 0px;
+  text-align: center;
+}
+
+.description {
+  font-family: $font-stack;
+  font-size: adaptive-size(24, 16);
+  font-weight: 400;
+  line-height: 28px;
+  letter-spacing: 0px;
+  text-align: left;
+}
+
+.start {
+  align-self: center;
+}

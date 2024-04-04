@@ -1,6 +1,7 @@
 import "modern-normalize/modern-normalize.css";
 import Header from "./app/components/header/header.ts";
 import Page404 from "./app/pages/404/404.ts";
+import Info from "./app/pages/info/info.ts";
 import { Navigation } from "./app/utils/type.ts";
 import { initializeRouter } from "./app/api/router.ts";
 import type { BaseComponent } from "./app/components/base-components.ts";
@@ -8,6 +9,7 @@ import type { BaseComponent } from "./app/components/base-components.ts";
 const {body} = document;
 const header = new Header();
 const page404 = new Page404();
+const pageInfo = new Info();
 
 // carsModel.load();
 
@@ -19,9 +21,7 @@ function renderPage(page: Navigation): void {
       // render(Navigation.garage, garagePage)
       break;
     case Navigation.info:
-      render(Navigation.page404, page404)
-      // garagePage.stopRace();
-      // render(Navigation.winners, winnersPage)
+      render(Navigation.info, pageInfo)
       break;
     case Navigation.chat:
       render(Navigation.page404, page404)

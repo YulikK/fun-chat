@@ -1,0 +1,14 @@
+@import './constant.scss';
+
+@function adaptive-size($max-size, $min-size) {
+  $add-size: $max-size - $min-size;
+  $max-free-width: $desktop-width-count - $min-width-count;
+  @return calc(
+    #{$min-size + px} + #{$add-size} * ((100vw - 380px) / #{$max-free-width})
+  );
+}
+
+@mixin visually-hidden {
+  display: none;
+  position: absolute;
+}
