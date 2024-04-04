@@ -1,26 +1,26 @@
 export type Props<T extends HTMLElement = HTMLElement> = Partial<
   Omit<T, 'style' | 'dataset' | 'classList' | 'children' | 'tagName '>
   > & {
-  type?: string;
-  width?: number;
-  height?: number;
-  htmlFor?: T extends HTMLLabelElement ? string : never;
-  checked?: T extends HTMLInputElement ? boolean : never;
-  id?: string;
-  placeholder?: string;
-  value?: string | number;
+  // type?: string;
+  // width?: number;
+  // height?: number;
+  // htmlFor?: T extends HTMLLabelElement ? string : never;
+  // checked?: T extends HTMLInputElement ? boolean : never;
+  // id?: string;
+  // placeholder?: string;
+  // value?: string | number;
   tag: keyof HTMLElementTagNameMap;
 };
 
 export type ElementProps<T extends HTMLElement = HTMLElement> = Omit<Props<T>, 'tag'>;
 
-export class BaseComponent<T extends HTMLElement = HTMLElement> {
-  protected element: T;
+export class BaseComponent {
+  protected element: HTMLElement;
 
   protected child: BaseComponent[] = [];
 
-  constructor(props: Props<T>, ...child: BaseComponent[]) {
-    this.element = document.createElement(props.tag) as T;
+  constructor(props: Props, ...child: BaseComponent[]) {
+    this.element = document.createElement(props.tag);
     Object.assign(this.element, props);
     if (child) {
       this.appendChild(child);
