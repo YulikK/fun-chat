@@ -1,0 +1,28 @@
+@import 'src/scss/constant.scss';
+
+.container{
+  margin: 0 auto;
+  background-color: #f9f2d5;
+}
+
+.text{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: $font-stack;
+  color: #272727;
+  font-size: 1.5rem;
+  font-weight: 800;
+  padding-top: 1rem;
+  margin: 0;
+}
+
+.img{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50%;
+  height: auto;
+  object-fit: cover;
+  margin: 0 auto;
+}
