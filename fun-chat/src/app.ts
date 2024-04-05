@@ -1,6 +1,7 @@
 import "modern-normalize/modern-normalize.css";
 import Header from "./app/components/header/header.ts";
 import Page404 from "./app/pages/404/404.ts";
+import AlertStack from "./app/components/alert-stack/alert-stack.ts";
 import AuthPage from "./app/pages/auth/auth.ts";
 import Info from "./app/pages/info/info.ts";
 import { Navigation } from "./app/utils/type.ts";
@@ -11,11 +12,17 @@ const {body} = document;
 const header = new Header();
 const page404 = new Page404();
 const pageInfo = new Info();
-const pageAuth = new AuthPage();
+const alertStack = new AlertStack();
+const pageAuth = new AuthPage(alertStack);
+
 
 // carsModel.load();
 
-body.appendChild(header.getElement());
+
+// export default alertStack = div({ className: classes.stack });
+
+// body.appendChild(header.getElement());
+// body.appendChild(alertStack.getElement());
 function renderPage(page: Navigation): void {
   switch (page) {
     case Navigation.auth:
@@ -40,8 +47,10 @@ function render(page: Navigation, pageComponent: BaseComponent): void {
   body.innerHTML = '';
   header.setActivePage(page);
   body.appendChild(header.getElement());
+  body.appendChild(alertStack.getElement());
   body.appendChild(pageComponent.getElement());
 }
 
 initializeRouter(renderPage);
+
 

@@ -11,3 +11,44 @@ export enum Fields {
   name = 'name',
   password = 'password',
 }
+
+export type ServerMessage = {
+  id: string;
+  type: AppError | UserActions;
+  payload: {
+    error?: string,
+    user?: User,
+    users?: User[],
+    message?: Message,
+    messages?: Message[],
+  } | null;
+};
+
+export type User = {
+  login: string | null;
+  password?: string | null;
+  isLogined: boolean;
+};
+
+export type Message = {
+  id: string | null;
+  from: string | null;
+  to: string | null;
+  text: string;
+  datetime: number;
+  status: MessageStatus;
+};
+
+export type MessageStatus = {
+  isDelivered: boolean;
+  isReaded: boolean;
+  isEdited: boolean;
+};
+
+export const enum UserActions {
+  LOGIN = 'USER_LOGIN',
+}
+
+export const enum AppError {
+  ERROR = 'ERROR',
+}
