@@ -1,20 +1,69 @@
-// import type { FieldName } from "@/app/utils/type.ts";
-// import { BaseComponent } from '../base-components.ts';
-// import classes from './input.module.scss';
+import type { Fields } from "@/app/utils/type.ts";
+import { validateField } from "@/app/utils/validation.ts";
+import { BaseComponent } from '../base-components.ts';
+import { p } from "../tags.ts";
+import classes from './input.module.scss';
 
-// interface Props {
-//   tag?: string;
-//   id: FieldName;
-//   type: string;
-//   placeholder?: string;
-//   className?: string;
-//   value?: string;
-// }
+interface InputProps {
+  tag?: string;
+  id: Fields;
+  type: string;
+  placeholder?: string;
+  className?: string;
+  value?: string;
+  errorContainer: BaseComponent;
+}
 
-// export default class Input extends BaseComponent{
+export default class Input extends BaseComponent{
+  private errorContainer: BaseComponent;
 
-//   constructor({ id, type, placeholder, className, value }: Props) {
-//     super({ tag: 'input', id, type, placeholder, className: `${classes.input} ${className || ''}`, value }) 
-//   }
+  private errorsMsg: BaseComponent | null = null;
 
-// } 
+  private id: Fields;
+
+  constructor({ id, type, placeholder, className, errorContainer, value=''}: InputProps) {
+    super({ tag: 'input', id, type, placeholder, className: `${classes.input} ${className || ''}`, value }) 
+
+    this.id = id;
+    this.errorContainer = errorContainer;
+    this.element.addEventListener('change', this.onChange);
+  }
+
+  private onChange = (event: Event): void =>{
+    event.preventDefault();
+    this.validate();
+  }
+
+  public isValid(): boolean {
+    return this.validate();
+  }
+
+  private validate = (): boolean => {
+    const value = this.getValue();
+    const validationResult = validateField(value, this.id);
+
+    if (validationResult.isValid) {
+      this.setSuccess();
+    } else {
+      this.setError(validationResult.error);
+    }
+    return validationResult.isValid;
+  }
+
+  private setError(error: string): void {
+    this.errorContainer.getElement().innerHTML = '';
+    this.errorsMsg = p(classes.errorMessage!, error);
+    this.errorContainer.append(this.errorsMsg);
+    this.addClass(classes.error!);
+    this.removeClass(classes.success!);
+  }
+
+  private setSuccess(): void {
+    this.errorContainer.getElement().innerHTML = '';
+    if (this.errorsMsg) {
+      this.errorsMsg.destroy();
+    }
+    this.addClass(classes.success!);
+    this.removeClass(classes.error!);
+  }
+} 

@@ -6,3 +6,8 @@ export enum Navigation {
   chat = 'chat',
   page404 = '',
 }
+
+export enum Fields {
+  name = 'name',
+  password = 'password',
+}

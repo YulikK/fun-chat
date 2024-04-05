@@ -20,14 +20,25 @@ export function initializeRouter(onRouteChange: (page: Navigation) => void): voi
   }
 }
 
-export function getNavigation(value: string): Navigation {
-  if (value.toLowerCase() === 'auth') {
-    return Navigation.auth;
-  } if( value.toLowerCase() === 'info') {
-    return Navigation.info;
-  } if( value.toLowerCase() === 'chat') {
-    return Navigation.chat;
-  } 
-    return Navigation.page404;
-  
+export function getNavigation(pageString: string): Navigation {
+  const navigationValues = Object.values(Navigation);
+
+  const foundValue = navigationValues.find(value => value.toLowerCase() === pageString.toLowerCase());
+
+  if (foundValue) {
+    return foundValue;
+  }
+
+  return Navigation.page404;
 }
+
+// export function getNavigation(value: string): Navigation {
+//   if (value.toLowerCase() === 'auth') {
+//     return Navigation.auth;
+//   } if( value.toLowerCase() === 'info') {
+//     return Navigation.info;
+//   } if( value.toLowerCase() === 'chat') {
+//     return Navigation.chat;
+//   } 
+//     return Navigation.page404;
+  

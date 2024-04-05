@@ -1,6 +1,7 @@
 import "modern-normalize/modern-normalize.css";
 import Header from "./app/components/header/header.ts";
 import Page404 from "./app/pages/404/404.ts";
+import AuthPage from "./app/pages/auth/auth.ts";
 import Info from "./app/pages/info/info.ts";
 import { Navigation } from "./app/utils/type.ts";
 import { initializeRouter } from "./app/api/router.ts";
@@ -10,6 +11,7 @@ const {body} = document;
 const header = new Header();
 const page404 = new Page404();
 const pageInfo = new Info();
+const pageAuth = new AuthPage();
 
 // carsModel.load();
 
@@ -17,7 +19,7 @@ body.appendChild(header.getElement());
 function renderPage(page: Navigation): void {
   switch (page) {
     case Navigation.auth:
-      render(Navigation.page404, page404)
+      render(Navigation.auth, pageAuth)
       // render(Navigation.garage, garagePage)
       break;
     case Navigation.info:

@@ -84,6 +84,10 @@ export class BaseComponent {
     }
   }
 
+  public addListener(listener: keyof HTMLElementEventMap, callback: (event: Event) => void): void {
+    this.element.addEventListener(listener, callback);
+  }
+
   public addClass(classNameClassName: string): void {
     this.element.classList.add(classNameClassName);
   }

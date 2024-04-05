@@ -35,4 +35,14 @@
   &:hover{
     color: #f0efef;
   }
+
+  
+}
+
+.disable{
+  opacity: 0.5;
+  cursor: default;
+  &:hover{
+    color: #f0efef;
+  }
 }

@@ -30,3 +30,6 @@ export const nav = (props: ElementProps<HTMLElement>, ...children: BaseComponent
 
 export const section = (props: ElementProps<HTMLElement>, ...children: BaseComponent[]): BaseComponent =>
   new BaseComponent({ ...props, tag: 'section' }, ...children)
+
+export const form = (props: ElementProps<HTMLElement>, ...children: BaseComponent[]): BaseComponent =>
+  new BaseComponent({ ...props, tag: 'form' }, ...children)

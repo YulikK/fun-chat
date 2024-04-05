@@ -4,7 +4,10 @@ import { navigateTo, getNavigation } from "@/app/api/router.ts";
 import { li, a, ul, nav } from "../tags.ts";
 import classes from "./header.module.scss";
 
+const NEED_AUTH = [Navigation.chat];
 export default class Header extends BaseComponent {
+  private isAuth = false;
+
   private active: Navigation = Navigation.chat;
 
   private items: BaseComponent[] = [];
@@ -28,7 +31,8 @@ export default class Header extends BaseComponent {
     const navItems: BaseComponent[] = [];
     Object.entries(Navigation).forEach(([key, value]) => {
       if (value && key) {
-        navItems.push(this.getNavItem(value, value === this.active));
+        const needsAuth = !this.isAuth && NEED_AUTH.includes(value);
+        navItems.push(this.getNavItem(getTittle(value), value === this.active, needsAuth));
       }
     });
     navList.appendChild(navItems);
@@ -36,16 +40,21 @@ export default class Header extends BaseComponent {
     return navMenu;
   }
 
-  private getNavItem(name: string, active: boolean): BaseComponent {
-    const items = li(`${classes['nav-item']} ${active ? classes.active : ''}`, this.onLinkClick,
-      a({ className: classes['nav-link'], textContent: name.charAt(0).toUpperCase() + name.slice(1).toLowerCase() }));
+  private getNavItem(tittle: string, active: boolean, disable: boolean): BaseComponent {
+    const items = li(`${classes['nav-item']} ${active ? classes.active : ''} ${disable ? classes.disable : ''} `, this.onLinkClick,
+      a({ className: classes['nav-link'], textContent: tittle }));
     this.items.push(items);
     return items
   }
 
+  
+
   private onLinkClick = (evt: Event): void => {
     const item = evt.currentTarget;
-    if (item && item instanceof HTMLElement) {
+    if (item &&
+      item instanceof HTMLElement &&
+      !item.classList.contains(classes.active!) &&
+      !item.classList.contains(classes.disable!)) {
       const link = item.firstChild;
       if (link instanceof HTMLElement && link.textContent) {
         const text = link.textContent.toLowerCase();
@@ -57,4 +66,12 @@ export default class Header extends BaseComponent {
   }
 
 
+}
+
+function getTittle(name: string): string {
+  const tittle = name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+  // if (page === 'auth') {
+  //   tittle += this.isAuth ? 'out' : 'in';
+  // }
+  return tittle;
 }
