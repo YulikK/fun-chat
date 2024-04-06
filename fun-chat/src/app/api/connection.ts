@@ -3,6 +3,7 @@ import type AlertStack from "../components/alert-stack/alert-stack.ts";
 import getNewId from "../utils/id-generator.ts";
 import { UserActions } from "../utils/type.ts";
 import type { ServerMessage, User } from "../utils/type.ts";
+import type Controller from "../controller/controller.ts";
 
 
 type serverAnswerError= {
@@ -15,7 +16,7 @@ type serverAnswerError= {
 
 type serverAnswerSuccess = {
   id: string,
-  type: 'USER_LOGIN',
+  type: UserActions.LOGIN,
   payload: {
     user: {
       login: string,
@@ -24,6 +25,8 @@ type serverAnswerSuccess = {
   },
 }
 export default class Connection {
+  private controller: Controller | null = null;
+
   private readonly END_POINT = `ws://localhost:4000`;
 
   private alertStack: AlertStack
@@ -33,6 +36,15 @@ export default class Connection {
   constructor(alertStack: AlertStack) {
     this.alertStack = alertStack;
     this.getNewConnection();
+  }
+
+  public setController(controller: Controller): boolean {
+    let result = false;
+    if (controller) {
+      this.controller = controller;
+      result = true;
+    }
+    return result;
   }
 
   private sendMessage(message: ServerMessage): void {
@@ -63,9 +75,15 @@ export default class Connection {
       if (typeof message.data === 'string') {
         const response: unknown = JSON.parse(message.data);
   
-        if (isSuccessAnswer(response)) {
-          const { user } = response.payload;
-          console.log(user);
+        if (isSuccessAnswer(response) && this.controller) {
+          if (response.type === UserActions.LOGIN) {
+            const { user } = response.payload;
+            this.controller.afterSuccessLogin(user);
+          } else if (response.type === UserActions.LOGOUT) {
+            const { user } = response.payload;
+            this.controller.afterSuccessLogout(user);
+          }
+          
         } else if (isErrorAnswer(response)) {
           const { error } = response.payload;
           const alert = new AlertComponent(this.alertStack, error);
@@ -78,10 +96,22 @@ export default class Connection {
     });
   }
 
-  public addUser(user: User): void {
+  public sendLogin(user: User): void {
     const request: ServerMessage = {
       id: getNewId(),
       type: UserActions.LOGIN,
+      payload: {
+        user
+      },
+    };
+    this.sendMessage(request);
+  }
+
+
+  public sendLogout(user: User): void {
+    const request: ServerMessage = {
+      id: getNewId(),
+      type: UserActions.LOGOUT,
       payload: {
         user
       },
@@ -96,7 +126,6 @@ function isSuccessAnswer(entity: unknown): entity is serverAnswerSuccess {
       entity &&
       'type' in entity &&
       typeof entity.type === 'string' &&
-      entity.type === 'USER_LOGIN' &&
       'id' in entity &&
       typeof entity.id === 'string'
   );

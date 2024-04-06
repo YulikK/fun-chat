@@ -1,11 +1,17 @@
+import type Controller from "@/app/controller/controller.ts";
 import { BaseComponent } from "@/app/components/base-components.ts";
 import { Navigation } from "@/app/utils/type.ts";
 import { navigateTo, getNavigation } from "@/app/api/router.ts";
 import { li, a, ul, nav } from "../tags.ts";
 import classes from "./header.module.scss";
 
+
+
 const NEED_AUTH = [Navigation.chat];
 export default class Header extends BaseComponent {
+
+  private controller: Controller| null = null;
+
   private isAuth = false;
 
   private active: Navigation = Navigation.chat;
@@ -17,37 +23,66 @@ export default class Header extends BaseComponent {
     this.append(this.getNavList());
   }
 
+  public setController(controller: Controller): void {
+    this.controller = controller;
+  }
+
   public setActivePage(page: Navigation): void {
     this.items.forEach(item => item.removeClass(classes.active!));
-    const item = this.items.find(el => el.getElement().textContent?.toLowerCase() === page);
+    const item = this.items.find(el => el.getElement().dataset.data === page);
     if (item) {
       item.getElement().classList.add(classes.active!);
     }
+  }
+
+  public changeAuth(isAuth: boolean): boolean {
+    let result = false;
+    this.isAuth = isAuth;
+    if (this.isAuth) {
+      this.items.forEach(item => {
+        item.removeClass(classes.disable!);
+        const name = item.getElement().dataset.data;
+        if (name === 'auth') {
+          item.setText('Logout');
+        }
+      });
+      result = true;
+    } else {
+      this.items.forEach(item => {
+        const name = item.getElement().dataset.data;
+        if (name && NEED_AUTH.includes(getNavigation(name))) {
+          item.getElement().classList.add(classes.disable!);
+        }
+        if (name === 'auth') {
+          item.setText('Logout');
+        }
+      });
+    }
+    return result;
   }
   
   private getNavList(): BaseComponent {
     const navMenu = nav({ className: classes.navbar });
     const navList = ul({ className: classes['navbar-nav'] });
-    const navItems: BaseComponent[] = [];
     Object.entries(Navigation).forEach(([key, value]) => {
       if (value && key) {
         const needsAuth = !this.isAuth && NEED_AUTH.includes(value);
-        navItems.push(this.getNavItem(getTittle(value), value === this.active, needsAuth));
+        const newItems = this.getNavItem(this.getTittle(value), value, value === this.active, needsAuth);
+        this.items.push(newItems);
       }
     });
-    navList.appendChild(navItems);
+    navList.appendChild(this.items);
     navMenu.appendChild([navList])
     return navMenu;
   }
 
-  private getNavItem(tittle: string, active: boolean, disable: boolean): BaseComponent {
-    const items = li(`${classes['nav-item']} ${active ? classes.active : ''} ${disable ? classes.disable : ''} `, this.onLinkClick,
+  private getNavItem(tittle: string, data: string, active: boolean, disable: boolean): BaseComponent {
+    const items = li(`${classes['nav-item']}  ${active ? classes.active : ''} ${disable ? classes.disable : ''} `, this.onLinkClick,
       a({ className: classes['nav-link'], textContent: tittle }));
-    this.items.push(items);
+    items.getElement().dataset.data = data;
     return items
   }
 
-  
 
   private onLinkClick = (evt: Event): void => {
     const item = evt.currentTarget;
@@ -55,23 +90,34 @@ export default class Header extends BaseComponent {
       item instanceof HTMLElement &&
       !item.classList.contains(classes.active!) &&
       !item.classList.contains(classes.disable!)) {
-      const link = item.firstChild;
-      if (link instanceof HTMLElement && link.textContent) {
-        const text = link.textContent.toLowerCase();
-        const navPage = getNavigation(text);
-        navigateTo(navPage);
-        this.setActivePage(navPage);
+      const newLink = item.dataset.data;
+      if (newLink) {
+        const navPage = getNavigation(newLink);
+        if (navPage === Navigation.auth && this.isAuth) {
+          this.logout();
+        } else {
+          navigateTo(navPage);
+          this.setActivePage(navPage);
+        }
+        
       }
     }
   }
 
+  private logout(): void {
+    if (this.controller) {
+      this.controller.startLogout();
+    }
+  }
+
+    private getTittle(name: string): string {
+      let tittle = name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+      if (name === 'auth') {
+        tittle = this.isAuth ? 'Logout' : 'Login';
+      }
+      return tittle;
+    }
+
 
 }
 
-function getTittle(name: string): string {
-  const tittle = name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
-  // if (page === 'auth') {
-  //   tittle += this.isAuth ? 'out' : 'in';
-  // }
-  return tittle;
-}

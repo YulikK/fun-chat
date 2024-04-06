@@ -25,9 +25,10 @@ export type ServerMessage = {
 };
 
 export type User = {
+  id?: string | null;
   login: string | null;
   password?: string | null;
-  isLogined: boolean;
+  isLogined?: boolean;
 };
 
 export type Message = {
@@ -47,6 +48,7 @@ export type MessageStatus = {
 
 export const enum UserActions {
   LOGIN = 'USER_LOGIN',
+  LOGOUT = 'USER_LOGOUT',
 }
 
 export const enum AppError {

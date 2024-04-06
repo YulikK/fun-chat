@@ -1,3 +1,4 @@
+
 export type Props<T extends HTMLElement = HTMLElement> = Partial<
   Omit<T, 'style' | 'dataset' | 'classList' | 'children' | 'tagName '>
   > & {
@@ -78,10 +79,20 @@ export class BaseComponent {
     return value;
   }
 
+  public setValue(value: string): void {
+    if (this.element instanceof HTMLInputElement) {
+      this.element.value = value;
+    };
+  }
+
   public setElementSrc(src: string): void {
     if (this.element instanceof HTMLImageElement) {
       this.element.src = src;
     }
+  }
+
+  public setText(text: string): void {
+    this.element.textContent = text;
   }
 
   public addListener(listener: keyof HTMLElementEventMap, callback: (event: Event) => void): void {

@@ -31,14 +31,3 @@ export function getNavigation(pageString: string): Navigation {
 
   return Navigation.page404;
 }
-
-// export function getNavigation(value: string): Navigation {
-//   if (value.toLowerCase() === 'auth') {
-//     return Navigation.auth;
-//   } if( value.toLowerCase() === 'info') {
-//     return Navigation.info;
-//   } if( value.toLowerCase() === 'chat') {
-//     return Navigation.chat;
-//   } 
-//     return Navigation.page404;
-  
