@@ -27,6 +27,23 @@ export type ServerMessage = {
   } | null;
 };
 
+export type serverAnswerError= {
+  id: string,
+  type: AppError.ERROR,
+  payload: {
+    error: string
+  },
+}
+
+export type serverAnswerSuccess = {
+  id: string,
+  type: UserActions,
+  payload: {
+    user?: User,
+    users?: User[] 
+  },
+}
+
 export type User = {
   login: string | null;
   isLogined: boolean;
@@ -57,6 +74,8 @@ export const enum UserActions {
   LOGOUT = 'USER_LOGOUT',
   USER_ACTIVE = 'USER_ACTIVE',
   USER_INACTIVE = 'USER_INACTIVE',
+  USER_EXTERNAL_LOGIN = 'USER_EXTERNAL_LOGIN',
+  USER_EXTERNAL_LOGOUT = 'USER_EXTERNAL_LOGOUT',
 }
 
 export const enum AppError {
