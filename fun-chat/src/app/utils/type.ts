@@ -10,7 +10,10 @@ export enum Navigation {
 export enum Fields {
   name = 'name',
   password = 'password',
+  search = 'search',
 }
+
+export const NEED_VALIDATE = [Fields.name, Fields.password];
 
 export type ServerMessage = {
   id: string;

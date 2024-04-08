@@ -17,4 +17,18 @@ export default class UserComponent extends BaseComponent{
     }
     
   }
+
+  public getUser(): User {
+    return this.user;
+  }
+
+  public show(): User {
+    this.removeClass(classes.hide!);
+    return this.user;
+  }
+
+  public hide(): User {
+    this.addClass(classes.hide!);
+    return this.user;
+  }
 }

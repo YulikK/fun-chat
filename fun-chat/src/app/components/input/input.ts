@@ -1,4 +1,5 @@
 import type { Fields } from "@/app/utils/type.ts";
+import { NEED_VALIDATE } from "@/app/utils/type.ts";
 import { validateField } from "@/app/utils/validation.ts";
 import { BaseComponent } from '../base-components.ts';
 import { p } from "../tags.ts";
@@ -11,13 +12,15 @@ interface InputProps {
   placeholder?: string;
   className?: string;
   value?: string;
-  errorContainer: BaseComponent;
+  errorContainer?: BaseComponent;
 }
 
 export default class Input extends BaseComponent{
-  private errorContainer: BaseComponent;
+  private errorContainer: BaseComponent | null = null;
 
   private errorsMsg: BaseComponent | null = null;
+
+  private isNeedValidate: boolean;
 
   private id: Fields;
 
@@ -25,13 +28,21 @@ export default class Input extends BaseComponent{
     super({ tag: 'input', id, type, placeholder, className: `${classes.input} ${className || ''}`, value }) 
 
     this.id = id;
-    this.errorContainer = errorContainer;
+    
+    this.isNeedValidate = NEED_VALIDATE.includes(id);
+    if (errorContainer) {
+      this.errorContainer = errorContainer;
+    }
+    
     this.element.addEventListener('change', this.onChange);
   }
 
-  private onChange = (event: Event): void =>{
-    event.preventDefault();
-    this.validate();
+  private onChange = (event: Event): void => {
+    if (this.isNeedValidate) {
+      event.preventDefault();
+      this.validate();
+    }
+    
   }
 
   public isValid(): boolean {
@@ -51,19 +62,25 @@ export default class Input extends BaseComponent{
   }
 
   private setError(error: string): void {
-    this.errorContainer.getElement().innerHTML = '';
-    this.errorsMsg = p(classes.errorMessage!, error);
-    this.errorContainer.append(this.errorsMsg);
-    this.addClass(classes.error!);
-    this.removeClass(classes.success!);
+    if (this.errorContainer && this.isNeedValidate) {
+      this.errorContainer.getElement().innerHTML = '';
+      this.errorsMsg = p(classes.errorMessage!, error);
+      this.errorContainer.append(this.errorsMsg);
+      this.addClass(classes.error!);
+      this.removeClass(classes.success!);
+    }
+    
   }
 
   private setSuccess(): void {
-    this.errorContainer.getElement().innerHTML = '';
+    if (this.isNeedValidate && this.errorContainer) {
+      this.errorContainer.getElement().innerHTML = '';
     if (this.errorsMsg) {
       this.errorsMsg.destroy();
     }
     this.addClass(classes.success!);
     this.removeClass(classes.error!);
+    }
+    
   }
 } 
