@@ -26,6 +26,7 @@ export default class AuthPage extends BaseComponent {
     this.name = new Input({ id: Fields.name, type: 'text', placeholder: 'Name', errorContainer: this.errorsContainer});
     this.password = new Input({ id: Fields.password, type: 'password', placeholder: 'password', errorContainer: this.errorsContainer });
     this.loginBtn = Button({ textContent: 'Login', className: classes.login });
+    this.addListener('submit', this.login);
     this.loginBtn.addListener('click', this.login);
     
     this.generateView();
