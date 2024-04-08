@@ -2,7 +2,7 @@ import AlertComponent from "@/app/components/alert/alert.ts";
 import type AlertStack from "../components/alert-stack/alert-stack.ts";
 import getNewId from "../utils/id-generator.ts";
 import { UserActions } from "../utils/type.ts";
-import type { ServerMessage, User } from "../utils/type.ts";
+import type { Auth, ServerMessage, User } from "../utils/type.ts";
 import type Controller from "../controller/controller.ts";
 
 
@@ -16,12 +16,10 @@ type serverAnswerError= {
 
 type serverAnswerSuccess = {
   id: string,
-  type: UserActions.LOGIN,
+  type: UserActions,
   payload: {
-    user: {
-      login: string,
-      isLogined: boolean,
-    },
+    user?: User,
+    users?: User[] 
   },
 }
 export default class Connection {
@@ -76,14 +74,7 @@ export default class Connection {
         const response: unknown = JSON.parse(message.data);
   
         if (isSuccessAnswer(response) && this.controller) {
-          if (response.type === UserActions.LOGIN) {
-            const { user } = response.payload;
-            this.controller.afterSuccessLogin(user);
-          } else if (response.type === UserActions.LOGOUT) {
-            const { user } = response.payload;
-            this.controller.afterSuccessLogout(user);
-          }
-          
+          this.readResponse(response);
         } else if (isErrorAnswer(response)) {
           const { error } = response.payload;
           const alert = new AlertComponent(this.alertStack, error);
@@ -96,7 +87,46 @@ export default class Connection {
     });
   }
 
-  public sendLogin(user: User): void {
+  private readResponse(response: serverAnswerSuccess): void {
+    if (this.controller && response) {
+      switch (response.type) {
+        case UserActions.LOGIN: {
+          const { user } = response.payload;
+          if (user) {
+            this.controller.afterSuccessLogin(user);
+          }
+          break;
+        }
+        case UserActions.LOGOUT: {
+          const { user } = response.payload;
+          if (user) {
+            this.controller.afterSuccessLogout(user);
+          }
+          break;
+        }
+        case UserActions.USER_ACTIVE: {
+          const { users } = response.payload;
+          if (users) {
+            this.controller.afterSuccessGetActiveUsers(users);
+          }
+          break;
+        }
+        case UserActions.USER_INACTIVE: {
+          const { users } = response.payload;
+          if (users) {
+            this.controller.afterSuccessGetInactiveUsers(users);
+          }
+          break;
+        }
+        default: {
+          break;
+        }
+      }
+    }
+    
+  }
+
+  public sendLogin(user: Auth): void {
     const request: ServerMessage = {
       id: getNewId(),
       type: UserActions.LOGIN,
@@ -108,13 +138,31 @@ export default class Connection {
   }
 
 
-  public sendLogout(user: User): void {
+  public sendLogout(user: Auth): void {
     const request: ServerMessage = {
       id: getNewId(),
       type: UserActions.LOGOUT,
       payload: {
         user
       },
+    };
+    this.sendMessage(request);
+  }
+
+  public sendGetActiveUsers(): void {
+    const request: ServerMessage = {
+      id: getNewId(),
+      type: UserActions.USER_ACTIVE,
+      payload: null,
+    };
+    this.sendMessage(request);
+  }
+
+  public sendGetInactiveUsers(): void {
+    const request: ServerMessage = {
+      id: getNewId(),
+      type: UserActions.USER_INACTIVE,
+      payload: null,
     };
     this.sendMessage(request);
   }
@@ -126,6 +174,7 @@ function isSuccessAnswer(entity: unknown): entity is serverAnswerSuccess {
       entity &&
       'type' in entity &&
       typeof entity.type === 'string' &&
+      entity.type !== 'ERROR' &&
       'id' in entity &&
       typeof entity.id === 'string'
   );

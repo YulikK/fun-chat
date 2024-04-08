@@ -1,0 +1,13 @@
+.users-list{
+  display: flex;
+  flex-direction: column;
+  max-width: 30%;
+  border-right: 1px solid #3f36e7;
+  margin: 0;
+  padding: 1%;
+  height: 100%;
+}
+
+.wrap{
+  display: block;
+}

@@ -11,6 +11,8 @@ import { Navigation } from "./app/utils/type.ts";
 import { initializeRouter } from "./app/api/router.ts";
 import type { BaseComponent } from "./app/components/base-components.ts";
 import { div } from "./app/components/tags.ts";
+import Footer from "./app/components/footer/footer.ts";
+import classes from './app.module.scss';
 
 const { body } = document;
 const store = new Store();
@@ -20,6 +22,7 @@ const pageInfo = new Info();
 const alertStack = new AlertStack();
 const pageAuth = new AuthPage();
 const pageChat = new ChatPage();
+const footer = new Footer();
 
 const controller = new Controller(store, pageAuth, pageChat, alertStack, header);
 pageAuth.setController(controller);
@@ -27,10 +30,11 @@ store.setController(controller);
 header.setController(controller);
 
 
-const pageContainer = div({ id: 'app' });
+const pageContainer = div({ className: classes.app });
 body.appendChild(header.getElement());
 body.appendChild(pageContainer.getElement());
 body.appendChild(alertStack.getElement());
+body.appendChild(footer.getElement());
 
 
 function renderPage(page: Navigation): void {

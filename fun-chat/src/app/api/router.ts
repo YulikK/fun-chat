@@ -11,7 +11,7 @@ export function initializeRouter(onRouteChange: (page: Navigation) => void): voi
     onRouteChange(navPage);
   });
 
-  if (window.location.hash === '') {
+  if (window.location.hash === '' || window.location.hash === '#chat') {
     navigateTo(Navigation.auth);
   } else {
     const pageString = window.location.hash.slice(1);

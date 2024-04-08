@@ -1,8 +1,9 @@
 import type Controller from "@/app/controller/controller.ts";
 import { BaseComponent } from "@/app/components/base-components.ts";
 import { Navigation } from "@/app/utils/type.ts";
+import type { User } from "@/app/utils/type.ts";
 import { navigateTo, getNavigation } from "@/app/api/router.ts";
-import { li, a, ul, nav } from "../tags.ts";
+import { li, a, ul, nav, div, img, p } from "../tags.ts";
 import classes from "./header.module.scss";
 
 
@@ -18,9 +19,16 @@ export default class Header extends BaseComponent {
 
   private items: BaseComponent[] = [];
 
+  private userInfo: BaseComponent;
+
+  private navList: BaseComponent;
+
   constructor() {
     super({ tag: 'header' });
-    this.append(this.getNavList());
+    this.navList = this.getNavList();
+    this.userInfo = div({ className: classes.wrap });
+    this.navList.append(this.userInfo);
+    this.append(this.navList);
   }
 
   public setController(controller: Controller): void {
@@ -35,7 +43,7 @@ export default class Header extends BaseComponent {
     }
   }
 
-  public changeAuth(isAuth: boolean): boolean {
+  public changeAuth(isAuth: boolean, user?: User): boolean {
     let result = false;
     this.isAuth = isAuth;
     if (this.isAuth) {
@@ -46,6 +54,13 @@ export default class Header extends BaseComponent {
           item.setText('Logout');
         }
       });
+      if (user && user.login) {
+        this.userInfo.appendChild([
+          img({ src: 'img/user.png', alt: 'user', className: classes.img, width: 24, height: 24 }),
+          p(classes.text!, user.login)
+        ]);
+      }
+      
       result = true;
     } else {
       this.items.forEach(item => {
@@ -57,6 +72,7 @@ export default class Header extends BaseComponent {
           item.setText('Logout');
         }
       });
+      this.userInfo.clear();
     }
     return result;
   }

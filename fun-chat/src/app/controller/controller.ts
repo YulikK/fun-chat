@@ -2,7 +2,7 @@ import type Store from "../store/store";
 import type AuthPage from "../pages/auth/auth";
 import type ChatPage from "../pages/chat/chat.ts";
 import Connection from "../api/connection.ts";
-import type { User } from "../utils/type.ts";
+import type { Auth, User } from "../utils/type.ts";
 import { Navigation } from "../utils/type.ts";
 import { navigateTo } from "../api/router.ts";
 import type Header from "../components/header/header.ts";
@@ -32,7 +32,7 @@ export default class Controller {
     this.connection.setController(this);
   }
 
-  public login(user: User): boolean {
+  public login(user: Auth): boolean {
     let result = false;
     if (user) {
       this.store.setAuthInfo(user);
@@ -71,24 +71,39 @@ export default class Controller {
     return result;
   }
 
-  public afterLogin(): boolean {
+  public afterLogin(user: User): boolean {
     navigateTo(Navigation.chat);
-    if (this.header) {
-    this.header.changeAuth(true);
-    }
-
+    this.header.changeAuth(true, user);
+    this.connection.sendGetActiveUsers();
+    this.connection.sendGetInactiveUsers();
     return true;
+  }
+
+  public afterSuccessGetActiveUsers(users: User[]): boolean {
+    let result = false;
+    if (users) {
+      this.store.setActiveUsers(users);
+      this.pageChat.updateUsers(this.store.getUsersList());
+      result = true;
+    }
+    return result;
+  }
+
+  public afterSuccessGetInactiveUsers(users: User[]): boolean {
+    let result = false;
+    if (users) {
+      this.store.setInactiveUsers(users);
+      this.pageChat.updateUsers(this.store.getUsersList());
+      result = true;
+    }
+    return result;
   }
 
   public afterLogout(): boolean {
     navigateTo(Navigation.auth);
-    if (this.header) {
-      this.pageAuth.resetForm();
-      this.header.changeAuth(false);
-    }
+    this.pageAuth.resetForm();
+    this.header.changeAuth(false);
     return true;
   }
-  
 
 }
-

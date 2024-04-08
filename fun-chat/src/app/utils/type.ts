@@ -17,7 +17,7 @@ export type ServerMessage = {
   type: AppError | UserActions;
   payload: {
     error?: string,
-    user?: User,
+    user?: Auth,
     users?: User[],
     message?: Message,
     messages?: Message[],
@@ -25,10 +25,13 @@ export type ServerMessage = {
 };
 
 export type User = {
-  id?: string | null;
   login: string | null;
-  password?: string | null;
-  isLogined?: boolean;
+  isLogined: boolean;
+};
+
+export type Auth = {
+  login: string | null;
+  password: string | null;
 };
 
 export type Message = {
@@ -49,6 +52,8 @@ export type MessageStatus = {
 export const enum UserActions {
   LOGIN = 'USER_LOGIN',
   LOGOUT = 'USER_LOGOUT',
+  USER_ACTIVE = 'USER_ACTIVE',
+  USER_INACTIVE = 'USER_INACTIVE',
 }
 
 export const enum AppError {

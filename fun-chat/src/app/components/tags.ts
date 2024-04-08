@@ -4,6 +4,12 @@ import { BaseComponent } from "./base-components.ts";
 export const div = (props: ElementProps<HTMLDivElement>, ...children: BaseComponent[]): BaseComponent =>
   new BaseComponent({ ...props, tag: 'div' }, ...children);
 
+export const aside = (props: ElementProps<HTMLBaseElement>, ...children: BaseComponent[]): BaseComponent =>
+  new BaseComponent({ ...props, tag: 'aside' }, ...children);
+
+export const article = (props: ElementProps<HTMLBaseElement>, ...children: BaseComponent[]): BaseComponent =>
+  new BaseComponent({ ...props, tag: 'article' }, ...children);
+
 export const h1 = (className: string, textContent: string, ...children: BaseComponent[]): BaseComponent =>
   new BaseComponent({ tag: 'h1', className, textContent }, ...children);
 

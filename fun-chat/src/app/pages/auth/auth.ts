@@ -1,6 +1,6 @@
 import { BaseComponent } from "@/app/components/base-components.ts";
 import type Controller from "@/app/controller/controller";
-import type { User } from "@/app/utils/type.ts";
+import type { Auth } from "@/app/utils/type.ts";
 import { Fields } from "@/app/utils/type.ts";
 import { div, img, form } from "@/app/components/tags.ts";
 import Input from "@/app/components/input/input.ts";
@@ -62,10 +62,9 @@ export default class AuthPage extends BaseComponent {
   private login = (): void => {
 
     if (this.validateForm()) {
-      const user: User = {
+      const user: Auth = {
         login: this.name.getValue(),
         password: this.password.getValue(),
-        isLogined: false
       }
       if (this.controller !== null) {
         this.controller.login(user);

@@ -1,61 +1,56 @@
-import type { User } from "../utils/type.ts"
+import type { Auth, User } from "../utils/type.ts"
 import type Controller from "../controller/controller.ts";
 
 export default class Store {
   private controller: Controller | null = null;
 
   private user: User = {
-    id: null,
     login: null,
-    password: null,
     isLogined: false,
   }
 
-  public setController(controller: Controller): boolean {
-    let result = false;
-    if (controller) {
-      this.controller = controller;
-      result = true;
+  private authInfo: Auth = {
+    login: null,
+    password: null
+  };
+
+  private usersList: User[] = [];
+
+  public setController(controller: Controller): Controller {
+    this.controller = controller;
+    return this.controller;
+  }
+
+  public setAuthInfo(auth: Auth): Auth {
+    if (auth.login && auth.password) {
+      this.authInfo = auth;
     }
-    return result;
+    return this.authInfo ;
   }
 
-  public setAuthInfo(user: User): boolean {
-    let result = false;
-    if (user.login && user.password) {
-      this.user = user;
-      result = true;
-    }
-    return result;
+  public getAuthInfo(): Auth {
+    return this.authInfo;
   }
 
-  public getAuthInfo(): User {
-    return { login: this.user.login, password: this.user.password };
-  }
-
-  public login(user: User): boolean {
-    let result = false;
+  public login(user: User): User {
     if (user.login && user.isLogined) {
       Object.assign(this.user, user);
       if (this.controller) {
-        this.controller.afterLogin();
+        this.controller.afterLogin(this.user);
       }
-      result = true;
     }
-    return result;
+    return this.user;
   }
 
-  public logout(): boolean {
-    let result = false;
+  public logout(): User {
     this.user.isLogined = false;
     this.user.login = null;
-    this.user.id = null;
-    this.user.password = null;
+    this.authInfo.login = null;
+    this.authInfo.password = null;
     if (this.controller) {
       this.controller.afterLogout();
     }
-    result = true;
-    return result;
+    return this.user;
   
   }
 
@@ -68,5 +63,24 @@ export default class Store {
   }
 
 
+  public setActiveUsers(users: User[]): User[] {
+    this.usersList = this.usersList.filter(user => !user.isLogined);
+    const otherUsers = users.filter(user => user.login !== this.user.login);
+    this.usersList.push(...otherUsers);
+    
+    this.usersList.sort((a, b) => Number(b.isLogined) - Number(a.isLogined));
+    return this.usersList;
+  }
+
+  public setInactiveUsers(users: User[]): User[] {
+    this.usersList = this.usersList.filter(user => user.isLogined);
+    this.usersList.push(...users);
+    this.usersList.sort((a, b) => Number(b.isLogined) - Number(a.isLogined));
+    return this.usersList;
+  }
+
+  public getUsersList(): User[] {
+    return this.usersList;
+  }
 
 }

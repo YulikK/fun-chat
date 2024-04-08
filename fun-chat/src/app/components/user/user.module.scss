@@ -1,0 +1,28 @@
+@import 'src/scss/constant.scss';
+
+.user{
+  list-style: none;
+  margin: 0;
+  padding: 1%;
+}
+
+.tittle{
+  font-family: $font-stack;
+  color: #000000;
+  font-size: 1rem;
+  margin: 0;
+}
+
+.tittle::before {
+  content: "";
+  display: inline-block;
+  width: 0.5rem;
+  height: 0.5rem;
+  margin-right: 1rem;
+  border-radius: 50%;
+  background-color: rgb(181, 169, 169);
+}
+
+.tittle.active::before {
+  background-color: #0dba0d;
+}
