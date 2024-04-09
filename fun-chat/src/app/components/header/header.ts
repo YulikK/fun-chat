@@ -54,7 +54,7 @@ export default class Header extends BaseComponent {
           item.setText('Logout');
         }
       });
-      if (user && user.login) {
+      if (user) {
         this.userInfo.appendChild([
           img({ src: 'img/user.png', alt: 'user', className: classes.img, width: 24, height: 24 }),
           p(classes.text!, user.login)

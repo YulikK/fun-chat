@@ -5,7 +5,7 @@ export default class Store {
   private controller: Controller | null = null;
 
   private user: User = {
-    login: null,
+    login: '',
     isLogined: false,
   }
 
@@ -45,7 +45,7 @@ export default class Store {
   public logout(user: User): User {
     if (user.login === this.user.login) {
       this.user.isLogined = false;
-      this.user.login = null;
+      this.user.login = '';
       this.authInfo.login = null;
       this.authInfo.password = null;
       if (this.controller) {
@@ -60,6 +60,8 @@ export default class Store {
     const userEl = this.usersList.find(el => el.login === user.login);
     if (userEl) {
       userEl.isLogined = true;
+    } else {
+      this.usersList.push(user);
     }
     this.usersSort();
     return userEl;

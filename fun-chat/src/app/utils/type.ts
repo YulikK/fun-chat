@@ -45,7 +45,7 @@ export type serverAnswerSuccess = {
 }
 
 export type User = {
-  login: string | null;
+  login: string;
   isLogined: boolean;
 };
 
