@@ -13,6 +13,11 @@ export enum Fields {
   search = 'search',
 }
 
+export enum Status {
+  delivered = 'delivered',
+  readed = 'readed',
+}
+
 export const NEED_VALIDATE = [Fields.name, Fields.password];
 
 export type ServerMessage = {

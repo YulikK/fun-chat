@@ -12,6 +12,9 @@
 
 .users-list li {
   cursor: pointer;
+  &:hover{
+    background-color: #6a64de;
+  }
 }
 
 .wrap{

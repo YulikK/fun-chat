@@ -1,8 +1,8 @@
 
-import { BaseComponent } from "../base-components.ts";
-import type AlertStack from "../alert-stack/alert-stack.ts";
-import { p } from "../tags.ts";
-import Button from "../button/button.ts";
+import { BaseComponent } from "../../base-components.ts";
+import type AlertStack from "../alert-stack.ts";
+import { p } from "../../tags.ts";
+import Button from "../../button/button.ts";
 import classes from "./alert.module.scss";
 
 export default class AlertComponent extends BaseComponent {

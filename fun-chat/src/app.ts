@@ -21,7 +21,7 @@ const page404 = new Page404();
 const pageInfo = new Info();
 const alertStack = new AlertStack();
 const pageAuth = new AuthPage();
-const pageChat = new ChatPage();
+const pageChat = new ChatPage(store);
 const footer = new Footer();
 
 const controller = new Controller(store, pageAuth, pageChat, alertStack, header);

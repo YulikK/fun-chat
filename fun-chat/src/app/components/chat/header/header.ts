@@ -12,11 +12,11 @@ export default class ChatHead extends BaseComponent {
     super({ tag: 'header', className: classes.head });
     this.user = user;
     this.userComponent = new UserComponent(this.user);
+    this.userComponent.addClass(classes.user!);
     this.append(this.userComponent);
   }
 
   public updateStatus(status: boolean): void {
-    // this.user.isLogined = status;
     this.userComponent.setOnline(status);
   }
 }

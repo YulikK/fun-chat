@@ -1,4 +1,4 @@
-import AlertComponent from "@/app/components/alert/alert.ts";
+import AlertComponent from "@/app/components/alert-stack/alert/alert.ts";
 import { isSuccessAnswer, isErrorAnswer } from "@/app/utils/utils.ts";
 import type AlertStack from "../../components/alert-stack/alert-stack.ts";
 import type { ServerMessage } from "../../utils/type.ts";
