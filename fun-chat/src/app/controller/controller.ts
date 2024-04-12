@@ -41,7 +41,6 @@ export default class Controller {
     this.header = header;
     this.serverResponse = new ServerResponse(this);
     this.connection = new Connection(this.alertStack, this.serverResponse);
-    this.connection.setController(this);
     this.request = new ServerRequest(this.connection)
     this.ctrAuth = new ControllerAuth(this.store, this.pageAuth, this.pageChat, this.header, this.request);
     this.ctrUser = new ControllerUser(this.store, this.pageChat);

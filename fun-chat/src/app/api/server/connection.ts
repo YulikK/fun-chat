@@ -2,11 +2,9 @@ import AlertComponent from "@/app/components/alert-stack/alert/alert.ts";
 import { isSuccessAnswer, isErrorAnswer } from "@/app/utils/utils.ts";
 import type AlertStack from "../../components/alert-stack/alert-stack.ts";
 import type { ServerAnswer } from "../../utils/type.ts";
-import type Controller from "../../controller/controller.ts";
 import type ServerResponse from "./server-response.ts";
 
 export default class Connection {
-  private controller: Controller | null = null;
 
   private readonly END_POINT = `ws://localhost:4000`;
 
@@ -20,15 +18,6 @@ export default class Connection {
     this.alertStack = alertStack;
     this.response = response;
     this.getNewConnection();
-  }
-
-  public setController(controller: Controller): boolean {
-    let result = false;
-    if (controller) {
-      this.controller = controller;
-      result = true;
-    }
-    return result;
   }
 
   public sendMessage(message: ServerAnswer): void {
@@ -59,7 +48,7 @@ export default class Connection {
       if (typeof message.data === 'string') {
         const response: unknown = JSON.parse(message.data);
   
-        if (isSuccessAnswer(response) && this.controller) {
+        if (isSuccessAnswer(response)) {
           this.response.read(response);
         } else if (isErrorAnswer(response)) {
           const { error } = response.payload;
