@@ -13,6 +13,6 @@ export default function userLoginHdl(response: serverAnswerSuccess, controller: 
 
   const { user } = response.payload;
   if (user) {
-    controller.responseUserLogin(user);
+    controller.ctrUser.responseUserLogin(user);
   }
 }

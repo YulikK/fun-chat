@@ -28,6 +28,7 @@ const controller = new Controller(store, pageAuth, pageChat, alertStack, header)
 pageAuth.setController(controller);
 store.setController(controller);
 header.setController(controller);
+pageChat.setController(controller);
 
 
 const pageContainer = div({ className: classes.app });

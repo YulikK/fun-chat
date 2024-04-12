@@ -3,8 +3,9 @@
 .user{
   list-style: none;
   margin: 0;
-  padding: 1%;
-  
+  padding: 6% 2%;
+  display: flex;
+  align-items: center;
 }
 
 .tittle{
@@ -38,4 +39,23 @@
 
 .active .tittle{
   color: #ffffff;
+}
+
+.badges {
+  align-self: start;
+  padding: 0.1rem 0.2rem;
+  margin-left: 0.3rem;
+  color: #f0efef;
+  background-color: #3f36e7;
+  border-radius: 5px;
+  font-size: 0.6rem;
+}
+
+.active .badges {
+  background-color: #f0efef;
+  color: #3f36e7;
+}
+
+.badges:empty {
+  display: none;
 }

@@ -14,23 +14,28 @@ export enum Fields {
 }
 
 export enum Status {
+  sended = 'sended',
   delivered = 'delivered',
   readed = 'readed',
 }
 
 export const NEED_VALIDATE = [Fields.name, Fields.password];
 
-export type ServerMessage = {
+export type ServerAnswer = {
   id: string;
-  type: AppError | UserActions;
+  type: AppError | UserActions | MessageActions;
   payload: {
     error?: string,
-    user?: Auth,
+    user?: Auth | MessageFrom,
     users?: User[],
-    message?: Message,
+    message?: Message | MessageSend | MessageId,
     messages?: Message[],
   } | null;
 };
+
+type MessageFrom = {
+  login: string
+}
 
 export type serverAnswerError= {
   id: string,
@@ -42,10 +47,12 @@ export type serverAnswerError= {
 
 export type serverAnswerSuccess = {
   id: string,
-  type: UserActions,
+  type: UserActions | MessageActions,
   payload: {
     user?: User,
-    users?: User[] 
+    users?: User[],
+    message?: Message,
+    messages?: Message[],
   },
 }
 
@@ -60,12 +67,21 @@ export type Auth = {
 };
 
 export type Message = {
-  id: string | null;
-  from: string | null;
-  to: string | null;
+  id: string;
+  from: string;
+  to: string;
   text: string;
   datetime: number;
   status: MessageStatus;
+};
+
+export type MessageSend = {
+  to: string | null;
+  text: string;
+};
+
+export type MessageId = {
+  id: string;
 };
 
 export type MessageStatus = {
@@ -81,6 +97,13 @@ export const enum UserActions {
   USER_INACTIVE = 'USER_INACTIVE',
   USER_EXTERNAL_LOGIN = 'USER_EXTERNAL_LOGIN',
   USER_EXTERNAL_LOGOUT = 'USER_EXTERNAL_LOGOUT',
+}
+
+export const enum MessageActions {
+  MSG_SEND = 'MSG_SEND',
+  MSG_FROM_USER = 'MSG_FROM_USER',
+  MSG_DELIVER = 'MSG_DELIVER',
+  MSG_READ = 'MSG_READ',
 }
 
 export const enum AppError {

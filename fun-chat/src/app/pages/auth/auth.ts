@@ -68,7 +68,7 @@ export default class AuthPage extends BaseComponent {
         password: this.password.getValue(),
       }
       if (this.controller !== null) {
-        this.controller.login(user);
+        this.controller.ctrAuth.login(user);
       }
       
     }

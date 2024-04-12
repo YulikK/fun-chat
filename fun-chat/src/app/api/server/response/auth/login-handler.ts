@@ -12,6 +12,6 @@ export default function loginHdl(response: serverAnswerSuccess, controller: Cont
 
   const { user } = response.payload;
   if (user) {
-    controller.responseLogin(user);
+    controller.ctrAuth.responseLogin(user);
   }
 }

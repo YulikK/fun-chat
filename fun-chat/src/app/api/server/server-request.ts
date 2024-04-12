@@ -1,8 +1,12 @@
-import getNewId from "@/app/utils/id-generator.ts";
-import type { Auth, ServerMessage } from "@/app/utils/type.ts";
-import { UserActions } from "@/app/utils/type.ts";
+import type { Auth, ServerAnswer } from "@/app/utils/type.ts";
 import type Connection from "./connection.ts";
-
+import rqLogin from "./request/auth/login.ts";
+import rqLogout from "./request/auth/logout.ts";
+import rqUserActive from "./request/user/active.ts";
+import rqUserInactive from "./request/user/inactive.ts";
+import rqMsgSend from "./request/message/send.ts";
+import rqMsgFromUser from "./request/message/from-user.ts";
+import rqMsgRead from "./request/message/read.ts";
 
 export default class ServerRequest {
   private connection: Connection;
@@ -12,43 +16,34 @@ export default class ServerRequest {
   }
   
   public sendLogin(user: Auth): void {
-    const request: ServerMessage = {
-      id: getNewId(),
-      type: UserActions.LOGIN,
-      payload: {
-        user
-      },
-    };
-    this.connection.sendMessage(request);
+    this.sendRequest(rqLogin(user));
   }
   
-  
   public sendLogout(user: Auth): void {
-    const request: ServerMessage = {
-      id: getNewId(),
-      type: UserActions.LOGOUT,
-      payload: {
-        user
-      },
-    };
-    this.connection.sendMessage(request);
+    this.sendRequest(rqLogout(user));
   }
   
   public sendGetActiveUsers(): void {
-    const request: ServerMessage = {
-      id: getNewId(),
-      type: UserActions.USER_ACTIVE,
-      payload: null,
-    };
-    this.connection.sendMessage(request);
+    this.sendRequest(rqUserActive());
   }
   
   public sendGetInactiveUsers(): void {
-    const request: ServerMessage = {
-      id: getNewId(),
-      type: UserActions.USER_INACTIVE,
-      payload: null,
-    };
+    this.sendRequest(rqUserInactive());
+  }
+
+  public sendMessage(user: string, text: string): void {
+    this.sendRequest(rqMsgSend(user, text));
+  }
+
+  public sendGetMessages(user: string): void {
+    this.sendRequest(rqMsgFromUser(user));
+  }
+
+  public sendRead(id: string): void {
+    this.sendRequest(rqMsgRead(id));
+  }
+
+  private sendRequest(request: ServerAnswer): void {
     this.connection.sendMessage(request);
   }
 }

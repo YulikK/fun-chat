@@ -122,7 +122,7 @@ export default class Header extends BaseComponent {
 
   private logout(): void {
     if (this.controller) {
-      this.controller.startLogout();
+      this.controller.ctrAuth.startLogout();
     }
   }
 

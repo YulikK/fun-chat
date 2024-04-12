@@ -12,6 +12,6 @@ export default function userInactiveHdl(response: serverAnswerSuccess, controlle
 
   const { users } = response.payload;
   if (users) {
-    controller.responseInactiveUsers(users);
+    controller.ctrUser.responseInactiveUsers(users);
   }
 }

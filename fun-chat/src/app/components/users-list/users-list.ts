@@ -67,6 +67,13 @@ export default class UserListComponent extends BaseComponent{
     this.appendChild(this.users)
   }
 
+  public setMessageCount(user: User, count: number): void {
+    const currentUser = this.users.find(item => item.getUser().login === user.login);
+    if (currentUser) {
+      currentUser.setMessageCount(count);
+    }
+  }
+
   private onUserClick = (event: Event): void => {
     const { target } = event;
     if (target instanceof HTMLElement) {

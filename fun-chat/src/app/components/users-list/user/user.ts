@@ -1,23 +1,36 @@
 import type { User } from "@/app/utils/type.ts";
 import { BaseComponent } from "../../base-components.ts";
 import classes from "./user.module.scss";
-import { p } from "../../tags.ts";
+import { p, span } from "../../tags.ts";
 
 export default class UserComponent extends BaseComponent{
   private user: User;
 
   private text: BaseComponent | null = null;
 
+  private badge: BaseComponent;
+
   private status: boolean;
+
+  private newMsg = 0;
 
   constructor(user: User) {
     super({ tag: 'li', className: classes.user });
     this.user = user;
     this.status = user.isLogined;
+    this.badge = span({ className: classes.badges, textContent: this.newMsg ? this.newMsg.toString() : '' });
     this.text = p(`${classes.tittle!} ${this.user.isLogined ? classes.online! : ''}`, this.user.login);
-    this.append(this.text);
-
+    this.appendChild([this.text, this.badge]);
     
+  }
+
+  public setMessageCount(count: number): void {
+    this.newMsg = count;
+    this.updateBadge();
+  }
+
+  private updateBadge(): void {
+    this.badge.setText(this.newMsg ? this.newMsg.toString() : '')
   }
 
   public setActive(status: boolean): void {

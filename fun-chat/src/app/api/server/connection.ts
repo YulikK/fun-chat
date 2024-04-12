@@ -1,11 +1,9 @@
 import AlertComponent from "@/app/components/alert-stack/alert/alert.ts";
 import { isSuccessAnswer, isErrorAnswer } from "@/app/utils/utils.ts";
 import type AlertStack from "../../components/alert-stack/alert-stack.ts";
-import type { ServerMessage } from "../../utils/type.ts";
+import type { ServerAnswer } from "../../utils/type.ts";
 import type Controller from "../../controller/controller.ts";
 import type ServerResponse from "./server-response.ts";
-
-
 
 export default class Connection {
   private controller: Controller | null = null;
@@ -33,7 +31,7 @@ export default class Connection {
     return result;
   }
 
-  public sendMessage(message: ServerMessage): void {
+  public sendMessage(message: ServerAnswer): void {
 
     if (this.connection) {
       this.connection.send(JSON.stringify(message));

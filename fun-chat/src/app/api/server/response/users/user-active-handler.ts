@@ -12,6 +12,6 @@ export default function userActiveHdl(response: serverAnswerSuccess, controller:
 
   const { users } = response.payload;
   if (users) {
-    controller.responseActiveUsers(users);
+    controller.ctrUser.responseActiveUsers(users);
   }
 }

@@ -13,7 +13,8 @@
 .users-list li {
   cursor: pointer;
   &:hover{
-    background-color: #6a64de;
+    text-decoration: underline;
+    text-decoration-color: #3f36e7;
   }
 }
 

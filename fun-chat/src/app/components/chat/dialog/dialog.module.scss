@@ -4,7 +4,6 @@
   height: 100%;
   width: 100%;
   padding: 1%;
-  // background: rgb(247, 248, 252);
   display: flex;
   flex-direction: column;
   overflow-y: scroll;
@@ -25,5 +24,14 @@
 
 .dialog .emptyDialog:only-child {
   display: block;
+}
+
+.new{
+  align-self: center;
+  justify-self: center;
+  font-family: $font-stack;
+  font-size: 1rem;
+  font-weight: 400;
+  color: #6f68f3;
 }
 

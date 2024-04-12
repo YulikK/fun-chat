@@ -12,6 +12,6 @@ export default function userLogoutHdl(response: serverAnswerSuccess, controller:
 
   const { user } = response.payload;
   if (user) {
-    controller.responseUserLogout(user);
+    controller.ctrUser.responseUserLogout(user);
   }
 }
