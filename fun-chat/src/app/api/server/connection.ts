@@ -33,7 +33,7 @@ export default class Connection {
 
   public sendMessage(message: ServerAnswer): void {
 
-    if (this.connection) {
+    if (this.connection && this.connection.readyState === WebSocket.OPEN) {
       this.connection.send(JSON.stringify(message));
     }
 
