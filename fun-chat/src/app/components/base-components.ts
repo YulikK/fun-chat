@@ -71,6 +71,11 @@ export class BaseComponent {
     this.child = [];
   }
 
+  public removeChild(child: BaseComponent): void {
+    this.child = this.child.filter(el => el !== child);
+    child.destroy();
+  }
+
   public getValue(): string {
     let value = '';
     if (this.element instanceof HTMLInputElement) {

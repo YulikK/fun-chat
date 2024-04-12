@@ -18,15 +18,18 @@ export default class Dialog extends BaseComponent {
 
   private isAutoScroll = false;
 
-  constructor() {
+  private deleteMessageHandler: (message: Message) => void;
+
+  constructor(deleteMessageHandler: (message: Message) => void) {
     super({ tag: 'div', className: classes.dialog });
+    this.deleteMessageHandler = deleteMessageHandler;
     this.emptyDialog = p(classes.emptyDialog!, EMPTY_MESSAGE);
     this.separator = p(classes.new!, NEW_MESSAGE);
     this.append(this.emptyDialog);
   }
 
   public addMessage(message: Message, isMy: boolean, user: User): void {
-    const messageEl = new MessageComponent(message, isMy, user);
+    const messageEl = new MessageComponent(message, isMy, user, this.deleteMessageHandler);
     this.messages.push(messageEl);
     this.append(messageEl);
     this.scrollMessage();
@@ -87,5 +90,20 @@ export default class Dialog extends BaseComponent {
     setTimeout(() => {
       this.isAutoScroll = false;
     }, 1000);
+  }
+
+  public deleteMessage(message: Message): void {
+    this.isAutoScroll = true;
+    const messageEl = this.messages.find(el => el.getMessage().id === message.id);
+    if (messageEl) {
+      this.messages = this.messages.filter(el => el !== messageEl);
+      this.removeChild(messageEl);
+    }
+    setTimeout(() => {
+      this.isAutoScroll = false;
+    }, 1000);
+    // if (!this.messages.length) {
+    //   this.append(this.emptyDialog);
+    // }
   }
 }

@@ -100,6 +100,22 @@ export default class ChatPage extends BaseComponent{
     }
   }
 
+  public deleteMessage(message: Message): void {
+    const user = this.store.getUserFromMessage(message);
+    if (user) {
+      const needRead = this.store.needReadMessage(user);
+      this.userList.setMessageCount(user, needRead);
+      const chat = this.getUserChat(user);
+      if (chat) {
+        chat.deleteMessage(message);
+        if (!needRead) {
+          chat.deleteSeparator();
+        }
+      }
+    }
+    
+  }
+
   private onUserClick = (user: User): void => {
     this.chatContainer.clear();
     const userChat = this.getUserChat(user);

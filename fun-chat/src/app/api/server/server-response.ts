@@ -10,6 +10,7 @@ import sendMegHdl from "./response/message/msg-send-handler.ts";
 import formUserHdl from "./response/message/msg-from-user-handler.ts";
 import deliverHdl from "./response/message/msg-deliver-handler.ts";
 import readHdl from "./response/message/msg-read-handler.ts";
+import deleteHdl from "./response/message/msg-delete-handler.ts";
 
 export default class ServerResponse {
   private controller: Controller;
@@ -29,5 +30,6 @@ export default class ServerResponse {
     formUserHdl(response, this.controller);
     deliverHdl(response, this.controller);
     readHdl(response, this.controller);
+    deleteHdl(response, this.controller);
   }
 }

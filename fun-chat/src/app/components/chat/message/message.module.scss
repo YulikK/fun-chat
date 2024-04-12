@@ -11,6 +11,11 @@
   &:hover{
     .btn-round{
       opacity: 0.5;
+      &:hover{
+        border: 1px solid #e7e5e5;
+        background-color: #fffafa;
+        opacity: 1;
+      }
     }
   }
 }
@@ -37,11 +42,7 @@
   border: 1px solid white;
   border-radius: 5px;
   opacity: 0;
-  &:hover{
-    border: 1px solid #e7e5e5;
-    background-color: #fffafa;
-    opacity: 1;
-  }
+  
 }
 .user,
 .time{

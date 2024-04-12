@@ -95,4 +95,25 @@ export default class ControllerMessage {
     }
     return result;
   }
+
+  public deleteMessage(message: Message): boolean {
+    let result = false;
+    if (message) {
+      this.request.sendDelete(message.id);
+      result = true;
+    }
+    return result;
+  }
+
+  public responseDelete(message: Message): boolean {
+    let result = false;
+    if (message) {
+      const messageEl = this.store.deleteMessage(message.id);
+      if (messageEl) {
+        this.pageChat.deleteMessage(messageEl);
+        result = true;
+      }
+    }
+    return result;
+  }
 }

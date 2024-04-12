@@ -161,7 +161,15 @@ export default class Store {
     ).length;
   }
 
-  private getUserFromList(user: string): User | undefined {
+  public deleteMessage(id: string): Message | undefined {
+    const message = this.message.find(el => el.id === id);
+    if (message) {
+      this.message = this.message.filter(el => el.id !== id);
+    }
+    return message;
+  }
+
+  public getUserFromList(user: string): User | undefined {
     return this.usersList.find(el => el.login === user);
   }
 

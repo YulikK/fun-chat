@@ -25,7 +25,7 @@ export default class Chat extends BaseComponent{
     this.user = user;
     this.controller = controller;
     this.head = new ChatHead(this.user);
-    this.dialog = new Dialog();
+    this.dialog = new Dialog(this.deleteMessageHandler);
     this.form = new MessageForm(this.submitHandler);
     this.appendChild([this.head, this.dialog, this.form]);
     this.dialog.addListener('click', this.onDialogClick);
@@ -78,5 +78,13 @@ export default class Chat extends BaseComponent{
       this.controller.ctrMessage.readAll(this.user);
     }
     
+  }
+
+  public deleteMessage(message: Message): void {
+    this.dialog.deleteMessage(message);
+  }
+
+  private deleteMessageHandler = (message: Message): void => {
+    this.controller.ctrMessage.deleteMessage(message);
   }
 }

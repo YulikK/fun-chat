@@ -7,6 +7,7 @@ import { a, div, img, p, span } from '../../tags.ts';
 
 
 const MY_MSG = 'You';
+type deleteCallback = (message: Message) => void;
 
 export default class MessageComponent extends BaseComponent {
   private message: Message;
@@ -29,9 +30,12 @@ export default class MessageComponent extends BaseComponent {
 
   private isEdit = false;
 
-  constructor(message: Message, isMy: boolean, user: User) {
+  private deleteCallback: deleteCallback
+
+  constructor(message: Message, isMy: boolean, user: User, deleteCallback: deleteCallback) {
     super({ tag: 'div', className: `${classes.message} ${isMy ? classes.right : classes.left}` });
     this.message = message;
+    this.deleteCallback = deleteCallback;
     this.text = p(classes.text!, message.text);
     this.time = span({ className: classes.time, textContent: getDateFormat(message.datetime) });
     this.isMy = isMy;
@@ -102,8 +106,8 @@ export default class MessageComponent extends BaseComponent {
     ]
   }
 
-  private onDelete = (): void =>{
-    this.destroy();
+  private onDelete = (): void => {
+    this.deleteCallback(this.message);
   }
 
   private onEdit = (): void => {

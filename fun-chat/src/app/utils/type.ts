@@ -104,6 +104,7 @@ export const enum MessageActions {
   MSG_FROM_USER = 'MSG_FROM_USER',
   MSG_DELIVER = 'MSG_DELIVER',
   MSG_READ = 'MSG_READ',
+  MSG_DELETE = 'MSG_DELETE',
 }
 
 export const enum AppError {
