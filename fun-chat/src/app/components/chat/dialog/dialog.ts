@@ -6,6 +6,7 @@ import { p } from '../../tags.ts';
 
 const EMPTY_MESSAGE = 'Start your dialog';
 const NEW_MESSAGE = 'New message';
+type messageCallback = (message: Message) => void;
 
 export default class Dialog extends BaseComponent {
   private messages: MessageComponent[] = [];
@@ -18,18 +19,21 @@ export default class Dialog extends BaseComponent {
 
   private isAutoScroll = false;
 
-  private deleteMessageHandler: (message: Message) => void;
+  private deleteMessageHandler: messageCallback;
 
-  constructor(deleteMessageHandler: (message: Message) => void) {
+  private editMessageHandler: messageCallback;
+
+  constructor(deleteMessageHandler: messageCallback, editMessageHandler: messageCallback){
     super({ tag: 'div', className: classes.dialog });
     this.deleteMessageHandler = deleteMessageHandler;
+    this.editMessageHandler = editMessageHandler;
     this.emptyDialog = p(classes.emptyDialog!, EMPTY_MESSAGE);
     this.separator = p(classes.new!, NEW_MESSAGE);
     this.append(this.emptyDialog);
   }
 
   public addMessage(message: Message, isMy: boolean, user: User): void {
-    const messageEl = new MessageComponent(message, isMy, user, this.deleteMessageHandler);
+    const messageEl = new MessageComponent(message, isMy, user, this.deleteMessageHandler, this.editMessageHandler);
     this.messages.push(messageEl);
     this.append(messageEl);
     this.scrollMessage();
@@ -105,5 +109,16 @@ export default class Dialog extends BaseComponent {
     // if (!this.messages.length) {
     //   this.append(this.emptyDialog);
     // }
+  }
+
+  public deleteEditStatus(): void {
+    this.messages.forEach(el => el.setEditView(false));
+  }
+
+  public setEditStatus(message: Message, status: boolean): void {
+    const messageEl = this.messages.find(el => el.getMessage().id === message.id);
+    if (messageEl) {
+      messageEl.setEditView(status);
+    }
   }
 }

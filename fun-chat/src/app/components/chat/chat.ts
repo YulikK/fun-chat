@@ -25,8 +25,8 @@ export default class Chat extends BaseComponent{
     this.user = user;
     this.controller = controller;
     this.head = new ChatHead(this.user);
-    this.dialog = new Dialog(this.deleteMessageHandler);
-    this.form = new MessageForm(this.submitHandler);
+    this.dialog = new Dialog(this.deleteMessageHandler, this.editMessageHandler);
+    this.form = new MessageForm(this.submitHandler, this.editSubmitHandler, this.editCloseHandler);
     this.appendChild([this.head, this.dialog, this.form]);
     this.dialog.addListener('click', this.onDialogClick);
     this.dialog.addListener('scroll', this.onDialogScroll);
@@ -72,12 +72,12 @@ export default class Chat extends BaseComponent{
   private onDialogClick = (): void => {
     this.controller.ctrMessage.readAll(this.user);
   }
-  
+
   private onDialogScroll = (): void => {
     if (!this.dialog.getIsAutoScroll()) {
       this.controller.ctrMessage.readAll(this.user);
     }
-    
+
   }
 
   public deleteMessage(message: Message): void {
@@ -85,6 +85,22 @@ export default class Chat extends BaseComponent{
   }
 
   private deleteMessageHandler = (message: Message): void => {
+    this.form.deleteMessageHandler(message);
     this.controller.ctrMessage.deleteMessage(message);
+  }
+
+  private editMessageHandler = (message: Message): void => {
+    this.dialog.deleteEditStatus();
+    this.dialog.setEditStatus(message, true);
+    this.form.setEditMessage(message);
+  }
+
+  private editSubmitHandler = (text: string, message: Message): void => {
+    this.dialog.setEditStatus(message, false);
+    this.controller.ctrMessage.editMessage(message.id, text);
+  }
+
+  private editCloseHandler = (message: Message): void => {
+    this.dialog.setEditStatus(message, false);
   }
 }

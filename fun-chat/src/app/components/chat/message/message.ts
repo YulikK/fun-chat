@@ -1,13 +1,13 @@
 import { Status } from '@/app/utils/type.ts';
 import type { Message, User } from '@/app/utils/type.ts';
-import { getDateFormat } from '@/app/utils/utils.ts';
+import getDateFormat from '@/app/utils/formatting.ts';
 import { BaseComponent } from '../../base-components.ts';
 import classes from './message.module.scss';
 import { a, div, img, p, span } from '../../tags.ts';
 
 
 const MY_MSG = 'You';
-type deleteCallback = (message: Message) => void;
+type messageCallback = (message: Message) => void;
 
 export default class MessageComponent extends BaseComponent {
   private message: Message;
@@ -30,12 +30,15 @@ export default class MessageComponent extends BaseComponent {
 
   private isEdit = false;
 
-  private deleteCallback: deleteCallback
+  private deleteCallback: messageCallback
 
-  constructor(message: Message, isMy: boolean, user: User, deleteCallback: deleteCallback) {
+  private editCallback: messageCallback
+
+  constructor(message: Message, isMy: boolean, user: User, deleteCallback: messageCallback, editCallback: messageCallback) {
     super({ tag: 'div', className: `${classes.message} ${isMy ? classes.right : classes.left}` });
     this.message = message;
     this.deleteCallback = deleteCallback;
+    this.editCallback = editCallback;
     this.text = p(classes.text!, message.text);
     this.time = span({ className: classes.time, textContent: getDateFormat(message.datetime) });
     this.isMy = isMy;
@@ -45,8 +48,8 @@ export default class MessageComponent extends BaseComponent {
     this.btnDelete = getBtn('delete');
     this.btnDelete.addListener('click', this.onDelete);
     this.btnEdit.addListener('click', this.onEdit);
-    this.deliverStatus = this.getStatusComponent(); 
-    
+    this.deliverStatus = this.getStatusComponent();
+
     this.appendChild(this.getView());
   }
 
@@ -111,10 +114,22 @@ export default class MessageComponent extends BaseComponent {
   }
 
   private onEdit = (): void => {
-    this.isEdit = !this.isEdit;
-    this.editStatus.removeClass(classes.hide!);
+    // this.isEdit = true;
+    this.addClass(classes.edit!)
+    this.editCallback(this.message);
+    // this.editStatus.removeClass(classes.hide!);
   }
-  
+
+  public setEditView(isEdit: boolean): void {
+    this.isEdit = isEdit;
+    if (this.isEdit) {
+      this.addClass(classes.edit!);
+    } else {
+      this.removeClass(classes.edit!);
+    }
+
+  }
+
 }
 
 function getBtn(name: string): BaseComponent {

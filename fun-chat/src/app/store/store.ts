@@ -141,6 +141,14 @@ export default class Store {
     return message;
   }
 
+  public updateMessage(message: Message): Message | undefined {
+    const messageEl = this.message.find(el => el.id === message.id);
+    if (messageEl) {
+      Object.assign(messageEl, message);
+    }
+    return messageEl;
+  }
+
   public getUserFromMessage(message: Message): User | undefined {
     const msgTo = this.getUserFromList(message.to);
     const msgFrom = this.getUserFromList(message.from);
@@ -173,4 +181,12 @@ export default class Store {
     return this.usersList.find(el => el.login === user);
   }
 
+  public setEdit(message: Message): Message | undefined {
+    const messageEl = this.message.find(el => el.id === message.id);
+    if (messageEl) {
+      messageEl.text = message.text;
+      messageEl.status.isEdited = message.status.isEdited;
+    }
+    return messageEl;
+  }
 }

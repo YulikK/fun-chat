@@ -1,5 +1,5 @@
 import { MIN_LENGTH_PASS, MIN_LENGTH_NAME } from './constant.ts';
-import { Fields } from './type.ts';
+import { AppError, Fields, type serverAnswerError, type serverAnswerSuccess } from './type.ts';
 
 type ValidationType = {
   isValid: boolean;
@@ -51,15 +51,24 @@ export function validateField(value: string, field: Fields): ValidationType {
   return validation;
 }
 
-export function isOptionsType(entity: unknown): entity is Fields {
+export function isSuccessAnswer(entity: unknown): entity is serverAnswerSuccess {
   return Boolean(
     typeof entity === 'object' &&
       entity &&
-      'onSound' in entity &&
-      typeof entity.onSound === 'boolean' &&
-      'onTranslate' in entity &&
-      typeof entity.onTranslate === 'boolean' &&
-      'onPicture' in entity &&
-      typeof entity.onPicture === 'boolean',
+      'type' in entity &&
+      typeof entity.type === 'string' &&
+      entity.type !== AppError.ERROR.toString() &&
+      'id' in entity
+  );
+}
+
+export function isErrorAnswer(entity: unknown): entity is serverAnswerError {
+  return Boolean(
+    typeof entity === 'object' &&
+      entity &&
+      'type' in entity &&
+      typeof entity.type === 'string' &&
+      entity.type === AppError.ERROR.toString() &&
+      'id' in entity
   );
 }

@@ -116,4 +116,25 @@ export default class ControllerMessage {
     }
     return result;
   }
+
+  public editMessage(id: string, message: string): boolean {
+    let result = false;
+    if (id && message) {
+      this.request.sendEdit(id, message);
+      result = true;
+    }
+    return result;
+  }
+
+  public responseEditMessage(message: Message): boolean {
+    let result = false;
+    if (message) {
+      const messageEl = this.store.setEdit(message);
+      if (messageEl) {
+        this.pageChat.updateMessage(messageEl);
+        result = true;
+      }
+    }
+    return result;
+  }
 }

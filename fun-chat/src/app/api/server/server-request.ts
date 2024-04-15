@@ -8,6 +8,7 @@ import rqMsgSend from "./request/message/send.ts";
 import rqMsgFromUser from "./request/message/from-user.ts";
 import rqMsgRead from "./request/message/read.ts";
 import rqMsgDelete from "./request/message/delete.ts";
+import rqMsgEdit from "./request/message/edit.ts";
 
 export default class ServerRequest {
   private connection: Connection;
@@ -46,6 +47,10 @@ export default class ServerRequest {
   
   public sendDelete(id: string): void {
     this.sendRequest(rqMsgDelete(id));
+  }
+
+  public sendEdit(id: string, text: string): void {
+    this.sendRequest(rqMsgEdit(id, text));
   }
 
   private sendRequest(request: ServerAnswer): void {

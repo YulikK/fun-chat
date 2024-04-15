@@ -1,5 +1,5 @@
 import AlertComponent from "@/app/components/alert-stack/alert/alert.ts";
-import { isSuccessAnswer, isErrorAnswer } from "@/app/utils/utils.ts";
+import { isErrorAnswer, isSuccessAnswer } from "@/app/utils/validation.ts";
 import type AlertStack from "../../components/alert-stack/alert-stack.ts";
 import type { ServerAnswer } from "../../utils/type.ts";
 import type ServerResponse from "./server-response.ts";
