@@ -21,11 +21,17 @@ export default class UserListComponent extends BaseComponent{
     this.addListener('click', this.onUserClick);
   }
 
+  public clearUsers(): void {
+    this.users.forEach(user => user.destroy())
+    this.users = [];
+    this.clearChild();
+  }
+
   public updateUsers(users: User[]): void {
 
     const currentUsers = [...this.users];
     users.forEach(newUser => {
-      
+
       const currentItem = currentUsers.find(item => item.getUser().login === newUser.login);
 
       if (currentItem && currentItem.getStatus() !== newUser.isLogined) {

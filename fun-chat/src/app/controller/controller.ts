@@ -45,6 +45,7 @@ export default class Controller {
     this.ctrAuth = new ControllerAuth(this.store, this.pageAuth, this.pageChat, this.header, this.request);
     this.ctrUser = new ControllerUser(this.store, this.pageChat);
     this.ctrMessage = new ControllerMessage(this.store, this.pageChat, this.request);
+    this.connection.setReConnectCallback(this.ctrAuth.reLogin);
   }
 
 }

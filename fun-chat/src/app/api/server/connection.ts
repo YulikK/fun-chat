@@ -1,68 +1,109 @@
 import AlertComponent from "@/app/components/alert-stack/alert/alert.ts";
+import Spinner from "@/app/components/spinner/spinner.ts";
 import { isErrorAnswer, isSuccessAnswer } from "@/app/utils/validation.ts";
 import type AlertStack from "../../components/alert-stack/alert-stack.ts";
 import type { ServerAnswer } from "../../utils/type.ts";
 import type ServerResponse from "./server-response.ts";
 
+type reConnectCallback = () => boolean;
+
 export default class Connection {
 
   private readonly END_POINT = `ws://localhost:4000`;
 
-  private alertStack: AlertStack
-
-  private connection: WebSocket | null = null;
+  private alertStack: AlertStack;
 
   private response: ServerResponse;
+
+  private connectionWS: WebSocket;
+
+  private spinner: Spinner
+
+  private reConnectCallback: reConnectCallback | null = null;
+
+  private isConnectionLost = false;
 
   constructor(alertStack: AlertStack, response: ServerResponse) {
     this.alertStack = alertStack;
     this.response = response;
+    this.connectionWS = new WebSocket(`${this.END_POINT}`);
+    this.spinner = new Spinner();
     this.getNewConnection();
   }
 
   public sendMessage(message: ServerAnswer): void {
 
-    if (this.connection && this.connection.readyState === WebSocket.OPEN) {
-      this.connection.send(JSON.stringify(message));
+    if (this.connectionWS && this.connectionWS.readyState === WebSocket.OPEN) {
+      this.connectionWS.send(JSON.stringify(message));
+    } else {
+      this.onClose();
     }
+  }
 
+  public setReConnectCallback(callback: reConnectCallback): void {
+    this.reConnectCallback = callback;
   }
 
   private getNewConnection(): void {
-    const connection = new WebSocket(`${this.END_POINT}`);
-    connection.addEventListener('open', () => {
-      this.connection = connection;
-      this.setListeners(connection);
-    });
-    connection.addEventListener('error', (event: Event) => {
-      if (event instanceof ErrorEvent && event.error && typeof event.error === 'string') {
-        const alert = new AlertComponent(this.alertStack, event.error);
-        alert.show();
-        this.getNewConnection();
-      }
-    });
+    this.connectionWS.addEventListener('open', this.onOpen);
+    this.connectionWS.addEventListener('error', this.onError);
   }
 
-  private setListeners(connection: WebSocket): void {
-    connection.addEventListener('message', (message: MessageEvent) => {
-      if (typeof message.data === 'string') {
-        const response: unknown = JSON.parse(message.data);
-  
-        if (isSuccessAnswer(response)) {
-          this.response.read(response);
-        } else if (isErrorAnswer(response)) {
-          const { error } = response.payload;
-          const alert = new AlertComponent(this.alertStack, error);
-          alert.show();
-        }
-      }
-    });
-    connection.addEventListener('close', () => {
+  private onOpen = (): void => {
+    this.spinner.hide();
+    this.setListeners();
+    if (this.isConnectionLost && this.reConnectCallback) {
+      this.isConnectionLost = false;
+      this.reConnectCallback();
+    }
+  }
+
+  private onError = (event: Event): void => {
+    if (event instanceof ErrorEvent && event.error && typeof event.error === 'string') {
+      const alert = new AlertComponent(this.alertStack, event.error);
+      alert.show();
       this.getNewConnection();
-    });
+    }
   }
 
-  
+  private setListeners(): void {
+    this.connectionWS.addEventListener('message', this.onMessage);
+    this.connectionWS.addEventListener('close', this.onClose);
+  }
+
+  private onMessage = (message: MessageEvent): void => {
+    if (typeof message.data === 'string') {
+      const response: unknown = JSON.parse(message.data);
+
+      if (isSuccessAnswer(response)) {
+        this.response.read(response);
+      } else if (isErrorAnswer(response)) {
+        const { error } = response.payload;
+        const alert = new AlertComponent(this.alertStack, error);
+        alert.show();
+      }
+    }
+  }
+
+  private onClose = (): void => {
+    this.spinner.setMessage('Lost connection with server');
+    this.spinner.show();
+    this.isConnectionLost = true;
+    this.tryReconnect();
+  }
+
+  private tryReconnect(): void {
+    const interval = setInterval(() => {
+      if (this.connectionWS.readyState === WebSocket.CLOSED) {
+        this.connectionWS = new WebSocket(`${this.END_POINT}`);
+        this.getNewConnection();
+
+      } else {
+        clearInterval(interval);
+      }
+    }, 2000);
+  }
+
 }
 
 

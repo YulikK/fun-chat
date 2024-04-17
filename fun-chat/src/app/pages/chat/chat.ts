@@ -26,7 +26,7 @@ export default class ChatPage extends BaseComponent{
   constructor(store: Store) {
     super({ tag: 'section', className: classes.container });
     this.store = store;
-    
+
     const userListWarp = aside({ className: classes.aside });
     this.userList = new UserListComponent(this.onUserClick);
     userListWarp.append(this.userList);
@@ -44,9 +44,9 @@ export default class ChatPage extends BaseComponent{
       result = true;
     }
     return result;
-    
+
   }
-  
+
   public updateUsers(users: User[]): void {
     this.userList.updateUsers(users);
     users.forEach(user => {
@@ -75,7 +75,7 @@ export default class ChatPage extends BaseComponent{
 
   public afterLogout(): void {
     this.chats.forEach(chat => chat.destroy());
-    this.userList.destroyChild();
+    this.userList.clearUsers();
     this.chats = [];
     this.chatContainer.clear();
     this.chatContainer.append(this.emptyChat);
@@ -85,7 +85,7 @@ export default class ChatPage extends BaseComponent{
     if (message && message.id) {
       const chat = this.chats.find(el => el.getUser().login === message.from || el.getUser().login === message.to);
       if (chat) {
-        
+
         chat.updateMessage(message);
         const user = this.store.getUserFromMessage(message);
         if (user) {
@@ -95,7 +95,7 @@ export default class ChatPage extends BaseComponent{
             chat.deleteSeparator();
           }
         }
-        
+
       }
     }
   }
@@ -113,7 +113,7 @@ export default class ChatPage extends BaseComponent{
         }
       }
     }
-    
+
   }
 
   private onUserClick = (user: User): void => {
@@ -132,9 +132,15 @@ export default class ChatPage extends BaseComponent{
       const messages = this.store.getUserMessages(user);
       messages.forEach(message => {
         if (userChat) {
+
+          if (!message.status.isReaded && !this.store.isMyMessage(message)) {
+            userChat.insertSeparator();
+          }
           userChat.addMessage(message);
+
         }
       });
+      this.userList.setMessageCount(user, this.store.needReadMessage(user));
       this.chats.push(userChat);
     }
     return userChat;

@@ -33,11 +33,15 @@ export default class Dialog extends BaseComponent {
   }
 
   public addMessage(message: Message, isMy: boolean, user: User): void {
-    const messageEl = new MessageComponent(message, isMy, user, this.deleteMessageHandler, this.editMessageHandler);
-    this.messages.push(messageEl);
-    this.append(messageEl);
-    this.scrollMessage();
-    
+    const oldMsg = this.messages.find(msg => msg.getMessage().id === message.id);
+    if (!oldMsg) {
+      const messageEl = new MessageComponent(message, isMy, user, this.deleteMessageHandler, this.editMessageHandler);
+      this.messages.push(messageEl);
+      this.append(messageEl);
+      this.scrollMessage();
+    }
+
+
   }
 
   public updateMessage(message: Message): void {
@@ -72,9 +76,11 @@ export default class Dialog extends BaseComponent {
         lastMessage.getElement().scrollIntoView({ behavior: 'smooth' });
       }
     }
-    setTimeout(() => {
-      this.isAutoScroll = false;
-    }, 1000);
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        this.isAutoScroll = false;
+      }, 2000);
+    });
   }
 
   public getIsAutoScroll(): boolean {
@@ -102,6 +108,7 @@ export default class Dialog extends BaseComponent {
     if (messageEl) {
       this.messages = this.messages.filter(el => el !== messageEl);
       this.removeChild(messageEl);
+      messageEl.destroy();
     }
     setTimeout(() => {
       this.isAutoScroll = false;

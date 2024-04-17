@@ -36,6 +36,17 @@ export default class ControllerAuth {
     return result;
   }
 
+  public reLogin = (): boolean => {
+    let result = false;
+    const user = this.store.getAuthInfo()
+    if (user) {
+      // this.store.setAuthInfo(user);
+      this.request.sendLogin(user);
+      result = true;
+    }
+    return result;
+  }
+
   public responseLogin(user: User): boolean {
     let result = false;
     if (user.isLogined) {
