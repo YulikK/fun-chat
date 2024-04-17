@@ -1,75 +1,54 @@
-import { MIN_LENGTH_PASS, MIN_LENGTH_NAME } from './constant.ts';
-import TXT from './language.ts';
-import { AppError, Fields, type serverAnswerError, type serverAnswerSuccess } from './type.ts';
 
-type ValidationType = {
-  isValid: boolean;
-  error: string;
+
+type Rule = (value: string) => string | null;
+type RuleWithArgs<T> = (value: string, args: T) => string | null;
+
+const message = {
+  minLength: 'Value is too short',
+  startsWithCapitalLetter: 'Value must start with a capital letter',
+  onlyLatinLetters: 'Value must contain only Latin letters',
+  hasLowerCase: 'Value must contain at least one lowercase letter',
+  hasUpperCase: 'Value must contain at least one uppercase letter',
+  hasNumberOrSpecialCharacter: 'Value must contain at least one number or special character',
 }
 
-type ValidateOptions = {
-  message: string;
-  minLength: number;
-  regexAll: RegExp;
-  regexFirst: RegExp;
-  isFirstCapital?: boolean;
-}
+export default class Validation {
+  private rules: Rule[] = [];
 
-function getValidationConstant(field: Fields): ValidateOptions {
-  const regexAll = /^[a-zA-Z-]*$/;
-  const regexFirst = /^[A-Z][a-zA-Z-]*$/;
-  let message = '';
-  let minLength = 0;
-  let isFirstCapital = false;
-  if (field === Fields.name) {
-    message = TXT.name;
-    minLength = MIN_LENGTH_NAME;
-    isFirstCapital = true;
-  } else if (field === Fields.password){
-    message = TXT.password;
-    minLength = MIN_LENGTH_PASS;
+  constructor(rules: Rule[]) {
+    this.rules = rules;
   }
-  return { message, minLength, regexAll, regexFirst, isFirstCapital };
 
-}
-
-export function validateField(value: string, field: Fields): ValidationType {
-  const validation: ValidationType = {
-    isValid: false,
-    error: '',
+  public validate(value: string): string | null {
+    let errorMessage: string | null = null;
+    this.rules.forEach(rule => {
+      const result = rule(value);
+      if (!errorMessage && result) {
+        errorMessage = result;
+      }
+    });
+    return errorMessage;
   }
-  const { message, minLength, regexAll, regexFirst, isFirstCapital } = getValidationConstant(field);
 
-  if (value.length < minLength) {
-    validation.error = `${message} must be at least ${minLength} characters long`;
-  } else if (!regexAll.test(value)) {
-    validation.error = `${message} must contain only letters`;
-  } else if (isFirstCapital && !regexFirst.test(value)) {
-    validation.error = `${message} must start with a capital letter`;
-  } else {
-    validation.isValid = true;
+  public static minLengthRule: RuleWithArgs<number> = (value: string, minLength: number) => value.length >= minLength ? null : message.minLength;
+
+  public static minLengthRuleWrapper(minLength: number): Rule {
+    return (value: string) => Validation.minLengthRule(value, minLength);
   }
-  return validation;
-}
 
-export function isSuccessAnswer(entity: unknown): entity is serverAnswerSuccess {
-  return Boolean(
-    typeof entity === 'object' &&
-      entity &&
-      'type' in entity &&
-      typeof entity.type === 'string' &&
-      entity.type !== AppError.ERROR.toString() &&
-      'id' in entity
-  );
-}
+  public static startsWithCapitalLetterRule = (value: string): string | null =>
+    value.charAt(0) === value.charAt(0).toUpperCase() ? null : message.startsWithCapitalLetter;
 
-export function isErrorAnswer(entity: unknown): entity is serverAnswerError {
-  return Boolean(
-    typeof entity === 'object' &&
-      entity &&
-      'type' in entity &&
-      typeof entity.type === 'string' &&
-      entity.type === AppError.ERROR.toString() &&
-      'id' in entity
-  );
+  public static onlyLatinLettersRule = (value: string): string | null =>
+    /^[a-zA-Z]+$/.test(value) ? null : message.onlyLatinLetters;
+
+  public static hasLowerCaseRule = (value: string): string | null =>
+    /[a-z]/.test(value) ? null : message.hasLowerCase;
+
+  public static hasUpperCaseRule = (value: string): string | null =>
+    /[A-Z]/.test(value) ? null : message.hasUpperCase;
+
+  public static hasNumberOrSpecialCharacterRule = (value: string): string | null =>
+    /\d|[!@#$%^&*(),.?":{}|<>]/.test(value) ? null : message.hasNumberOrSpecialCharacter;
+
 }

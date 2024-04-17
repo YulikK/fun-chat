@@ -16,7 +16,7 @@ export default class UserListComponent extends BaseComponent{
   constructor(userClickCallback: UserClickCallback) {
     super({ tag: 'ul', className: classes['users-list'] });
     this.userClickCallback = userClickCallback;
-    this.search = new Input({ id: Fields.search, type: 'text', placeholder: TXT.find, className: classes.search });
+    this.search = new Input({ id: Fields.search, type: 'text', placeholder: TXT.find, className: classes.search, validation: undefined });
     this.search.addListener('input', this.onSearch);
     this.append(this.search);
     this.addListener('click', this.onUserClick);

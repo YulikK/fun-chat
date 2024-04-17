@@ -1,5 +1,6 @@
 import TXT from "@/app/utils/language.ts";
 import SRC from "@/app/utils/src.ts";
+import Validation from "@/app/utils/validation.ts";
 import { BaseComponent } from "@/app/components/base-components.ts";
 import type Controller from "@/app/controller/controller";
 import type { Auth } from "@/app/utils/type.ts";
@@ -8,6 +9,7 @@ import { div, img, form } from "@/app/components/tags.ts";
 import Input from "@/app/components/input/input.ts";
 import Button from "@/app/components/button/button.ts";
 import classes from "./auth.module.scss";
+
 
 export default class AuthPage extends BaseComponent {
   private controller: Controller | null = null;
@@ -23,8 +25,8 @@ export default class AuthPage extends BaseComponent {
   constructor() {
     super({ tag: 'div', className: classes.container });
     this.errorsContainer = div({ className: classes.errors });
-    this.name = new Input({ id: Fields.name, type: 'text', placeholder: TXT.name, errorContainer: this.errorsContainer});
-    this.password = new Input({ id: Fields.password, type: 'password', placeholder: TXT.password, errorContainer: this.errorsContainer });
+    this.name = new Input({ id: Fields.name, type: 'text', placeholder: TXT.name, errorContainer: this.errorsContainer, validation: getValidation(Fields.name)});
+    this.password = new Input({ id: Fields.password, type: 'password', placeholder: TXT.password, errorContainer: this.errorsContainer, validation: getValidation(Fields.password) });
     this.loginBtn = Button({ textContent: TXT.login, className: classes.login });
     this.addListener('submit', this.login);
     this.loginBtn.addListener('click', this.login);
@@ -61,7 +63,6 @@ export default class AuthPage extends BaseComponent {
   }
 
   private login = (): void => {
-
     if (this.validateForm()) {
       const user: Auth = {
         login: this.name.getValue(),
@@ -70,11 +71,30 @@ export default class AuthPage extends BaseComponent {
       if (this.controller !== null) {
         this.controller.ctrAuth.login(user);
       }
-
     }
-
   }
 
   private validateForm = (): boolean =>  this.name.isValid() && this.password.isValid()
 
+
+}
+
+function getValidation(field: Fields): Validation | undefined {
+  switch (field) {
+    case Fields.name:
+      return new Validation([
+        Validation.minLengthRuleWrapper(3),
+        Validation.startsWithCapitalLetterRule,
+        Validation.onlyLatinLettersRule
+      ]);
+    case Fields.password:
+      return new Validation([
+        Validation.minLengthRuleWrapper(4),
+        Validation.hasLowerCaseRule,
+        Validation.hasUpperCaseRule,
+        Validation.hasNumberOrSpecialCharacterRule,
+      ]);
+    default:
+      return undefined;
+  }
 }
