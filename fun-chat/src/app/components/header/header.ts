@@ -1,3 +1,5 @@
+import SRC from "@/app/utils/src.ts";
+import TXT from "@/app/utils/language.ts";
 import type Controller from "@/app/controller/controller.ts";
 import { BaseComponent } from "@/app/components/base-components.ts";
 import { Navigation } from "@/app/utils/type.ts";
@@ -5,8 +7,6 @@ import type { User } from "@/app/utils/type.ts";
 import { navigateTo, getNavigation } from "@/app/api/router.ts";
 import { li, a, ul, nav, div, img, p } from "../tags.ts";
 import classes from "./header.module.scss";
-
-
 
 const NEED_AUTH = [Navigation.chat];
 export default class Header extends BaseComponent {
@@ -69,7 +69,7 @@ export default class Header extends BaseComponent {
     this.userInfo.clear();
     if (this.isAuth && user) {
       this.userInfo.appendChild([
-        img({ src: 'img/user.png', alt: 'user', className: classes.img, width: 24, height: 24 }),
+        img({ src: SRC.user, alt: SRC.userAlt, className: classes.img, width: 24, height: 24 }),
         p(classes.text!, user.login)
       ]);
     }
@@ -80,7 +80,7 @@ export default class Header extends BaseComponent {
     const navList = ul({ className: classes['navbar-nav'] });
     this.updateItemsArray();
     navList.appendChild(this.items);
-    const logo = img({ src: 'img/logo.png', alt: 'logo', className: classes.logo, width: 100, height: 35 });
+    const logo = img({ src: SRC.logo, alt: SRC.logoAlt, className: classes.logo, width: 100, height: 35 });
     navMenu.appendChild([logo, navList])
     return navMenu;
   }
@@ -131,8 +131,8 @@ export default class Header extends BaseComponent {
 
   private getTittle(name: string): string {
     let tittle = name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
-    if (name === 'auth') {
-      tittle = this.isAuth ? 'Logout' : 'Login';
+    if (name === Navigation.auth.toString()) {
+      tittle = this.isAuth ? TXT.logout : TXT.login;
     }
     return tittle;
   }

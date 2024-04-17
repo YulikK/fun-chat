@@ -6,8 +6,6 @@ import ChatHead from "./header/header.ts";
 import Dialog from "./dialog/dialog.ts";
 import MessageForm from "./form/form.ts";
 
-
-
 export default class Chat extends BaseComponent{
   private user: User;
 

@@ -1,3 +1,4 @@
+import TXT from "../utils/language.ts";
 
 export type Props<T extends HTMLElement = HTMLElement> = Partial<
   Omit<T, 'style' | 'dataset' | 'classList' | 'children' | 'tagName '>
@@ -29,18 +30,18 @@ export class BaseComponent {
       this.appendChild(child);
     }
   }
-  
+
   public append(child: BaseComponent): void {
       this.child.push(child);
       this.element.append(child.getElement());
   }
-  
+
   public appendChild(child: BaseComponent[]): void {
     child.forEach((el) => {
       if (el instanceof BaseComponent) {
         this.append(el);
       } else {
-        throw new Error('Child is not an instance of BaseComponent');
+        throw new Error(TXT.messageBCError);
       }
     });
   }

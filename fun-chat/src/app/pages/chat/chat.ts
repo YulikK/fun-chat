@@ -1,3 +1,4 @@
+import TXT from "@/app/utils/language.ts";
 import { type Message, type User } from "@/app/utils/type.ts";
 import type Store from "@/app/store/store.ts";
 import type Controller from "@/app/controller/controller.ts";
@@ -7,8 +8,6 @@ import { BaseComponent } from "@/app/components/base-components.ts";
 import UserListComponent from "@/app/components/users-list/users-list.ts";
 import classes from "./chat.module.scss";
 
-
-const EMPTY_MESSAGE = 'Chose user for dialog';
 
 export default class ChatPage extends BaseComponent{
   private userList: UserListComponent;
@@ -32,7 +31,7 @@ export default class ChatPage extends BaseComponent{
     userListWarp.append(this.userList);
     this.append(userListWarp);
     this.chatContainer = article({ className: classes.article });
-    this.emptyChat = p(classes.emptyChat!, EMPTY_MESSAGE);
+    this.emptyChat = p(classes.emptyChat!, TXT.messageEmptyUser);
     this.chatContainer.append(this.emptyChat);
     this.append(this.chatContainer);
   }

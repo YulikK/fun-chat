@@ -1,3 +1,4 @@
+import TXT from "@/app/utils/language.ts";
 import { Fields, type User } from "@/app/utils/type.ts";
 import UserComponent from "./user/user.ts";
 import Input from "../input/input.ts";
@@ -15,7 +16,7 @@ export default class UserListComponent extends BaseComponent{
   constructor(userClickCallback: UserClickCallback) {
     super({ tag: 'ul', className: classes['users-list'] });
     this.userClickCallback = userClickCallback;
-    this.search = new Input({ id: Fields.search, type: 'text', placeholder: 'find...', className: classes.search });
+    this.search = new Input({ id: Fields.search, type: 'text', placeholder: TXT.find, className: classes.search });
     this.search.addListener('input', this.onSearch);
     this.append(this.search);
     this.addListener('click', this.onUserClick);

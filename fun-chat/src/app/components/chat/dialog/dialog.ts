@@ -1,11 +1,11 @@
 import type { Message, User } from '@/app/utils/type.ts';
+import TXT from '@/app/utils/language.ts';
 import { BaseComponent } from '../../base-components.ts';
 import MessageComponent from '../message/message.ts';
 import classes from './dialog.module.scss';
 import { p } from '../../tags.ts';
 
-const EMPTY_MESSAGE = 'Start your dialog';
-const NEW_MESSAGE = 'New message';
+
 type messageCallback = (message: Message) => void;
 
 export default class Dialog extends BaseComponent {
@@ -27,8 +27,8 @@ export default class Dialog extends BaseComponent {
     super({ tag: 'div', className: classes.dialog });
     this.deleteMessageHandler = deleteMessageHandler;
     this.editMessageHandler = editMessageHandler;
-    this.emptyDialog = p(classes.emptyDialog!, EMPTY_MESSAGE);
-    this.separator = p(classes.new!, NEW_MESSAGE);
+    this.emptyDialog = p(classes.emptyDialog!, TXT.messageEmptyChat);
+    this.separator = p(classes.new!, TXT.messageNewMessage);
     this.append(this.emptyDialog);
   }
 
@@ -40,8 +40,6 @@ export default class Dialog extends BaseComponent {
       this.append(messageEl);
       this.scrollMessage();
     }
-
-
   }
 
   public updateMessage(message: Message): void {
@@ -97,9 +95,11 @@ export default class Dialog extends BaseComponent {
         this.getElement().scrollTop = lastMessage.getElement().offsetTop;
       }
     }
+
     setTimeout(() => {
       this.isAutoScroll = false;
-    }, 1000);
+    }, 2000);
+
   }
 
   public deleteMessage(message: Message): void {
@@ -112,10 +112,7 @@ export default class Dialog extends BaseComponent {
     }
     setTimeout(() => {
       this.isAutoScroll = false;
-    }, 1000);
-    // if (!this.messages.length) {
-    //   this.append(this.emptyDialog);
-    // }
+    }, 2000);
   }
 
   public deleteEditStatus(): void {

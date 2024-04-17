@@ -1,3 +1,5 @@
+import TXT from "@/app/utils/language.ts";
+import SRC from "@/app/utils/src.ts";
 import { BaseComponent } from "@/app/components/base-components.ts";
 import type Controller from "@/app/controller/controller";
 import type { Auth } from "@/app/utils/type.ts";
@@ -6,8 +8,6 @@ import { div, img, form } from "@/app/components/tags.ts";
 import Input from "@/app/components/input/input.ts";
 import Button from "@/app/components/button/button.ts";
 import classes from "./auth.module.scss";
-
-
 
 export default class AuthPage extends BaseComponent {
   private controller: Controller | null = null;
@@ -23,12 +23,12 @@ export default class AuthPage extends BaseComponent {
   constructor() {
     super({ tag: 'div', className: classes.container });
     this.errorsContainer = div({ className: classes.errors });
-    this.name = new Input({ id: Fields.name, type: 'text', placeholder: 'Name', errorContainer: this.errorsContainer});
-    this.password = new Input({ id: Fields.password, type: 'password', placeholder: 'password', errorContainer: this.errorsContainer });
-    this.loginBtn = Button({ textContent: 'Login', className: classes.login });
+    this.name = new Input({ id: Fields.name, type: 'text', placeholder: TXT.name, errorContainer: this.errorsContainer});
+    this.password = new Input({ id: Fields.password, type: 'password', placeholder: TXT.password, errorContainer: this.errorsContainer });
+    this.loginBtn = Button({ textContent: TXT.login, className: classes.login });
     this.addListener('submit', this.login);
     this.loginBtn.addListener('click', this.login);
-    
+
     this.generateView();
   }
 
@@ -39,7 +39,7 @@ export default class AuthPage extends BaseComponent {
       result = true;
     }
     return result;
-    
+
   }
 
   public resetForm(): void {
@@ -49,7 +49,7 @@ export default class AuthPage extends BaseComponent {
 
   private generateView(): void {
     const modal = form({ className: classes.form },
-      img({ className: classes.img, src: 'img/user.png', alt: 'user', width: 40, height: 40 }),
+      img({ className: classes.img, src: SRC.user, alt: SRC.userAlt, width: 40, height: 40 }),
       div({ className: classes.inputWrapper },
         this.name,
         this.password),
@@ -70,9 +70,9 @@ export default class AuthPage extends BaseComponent {
       if (this.controller !== null) {
         this.controller.ctrAuth.login(user);
       }
-      
+
     }
-    
+
   }
 
   private validateForm = (): boolean =>  this.name.isValid() && this.password.isValid()

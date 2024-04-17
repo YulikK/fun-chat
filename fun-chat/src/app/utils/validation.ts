@@ -1,4 +1,5 @@
 import { MIN_LENGTH_PASS, MIN_LENGTH_NAME } from './constant.ts';
+import TXT from './language.ts';
 import { AppError, Fields, type serverAnswerError, type serverAnswerSuccess } from './type.ts';
 
 type ValidationType = {
@@ -21,11 +22,11 @@ function getValidationConstant(field: Fields): ValidateOptions {
   let minLength = 0;
   let isFirstCapital = false;
   if (field === Fields.name) {
-    message = 'Name';
+    message = TXT.name;
     minLength = MIN_LENGTH_NAME;
     isFirstCapital = true;
   } else if (field === Fields.password){
-    message = 'Password';
+    message = TXT.password;
     minLength = MIN_LENGTH_PASS;
   }
   return { message, minLength, regexAll, regexFirst, isFirstCapital };

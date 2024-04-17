@@ -1,3 +1,5 @@
+import TXT from '@/app/utils/language.ts';
+import SRC from '@/app/utils/src.ts';
 import { Status } from '@/app/utils/type.ts';
 import type { Message, User } from '@/app/utils/type.ts';
 import getDateFormat from '@/app/utils/formatting.ts';
@@ -6,7 +8,6 @@ import classes from './message.module.scss';
 import { a, div, img, p, span } from '../../tags.ts';
 
 
-const MY_MSG = 'You';
 type messageCallback = (message: Message) => void;
 
 export default class MessageComponent extends BaseComponent {
@@ -42,8 +43,8 @@ export default class MessageComponent extends BaseComponent {
     this.text = p(classes.text!, message.text);
     this.time = span({ className: classes.time, textContent: getDateFormat(message.datetime) });
     this.isMy = isMy;
-    this.user = span({ className: classes.user, textContent: `${this.isMy ? MY_MSG : user.login}` });
-    this.editStatus = img({className: `${classes.img} ${!this.message.status.isEdited ? classes.hide : ''}` , src: `img/is-edit.png`, alt: 'is edit', width: 15, height: 15});
+    this.user = span({ className: classes.user, textContent: `${this.isMy ? TXT.myMsg : user.login}` });
+    this.editStatus = img({className: `${classes.img} ${!this.message.status.isEdited ? classes.hide : ''}` , src: SRC.isEdit, alt: SRC.altIsEdit, width: 15, height: 15});
     this.btnEdit = getBtn('edit');
     this.btnDelete = getBtn('delete');
     this.btnDelete.addListener('click', this.onDelete);
@@ -114,10 +115,8 @@ export default class MessageComponent extends BaseComponent {
   }
 
   private onEdit = (): void => {
-    // this.isEdit = true;
     this.addClass(classes.edit!)
     this.editCallback(this.message);
-    // this.editStatus.removeClass(classes.hide!);
   }
 
   public setEditView(isEdit: boolean): void {
@@ -127,7 +126,6 @@ export default class MessageComponent extends BaseComponent {
     } else {
       this.removeClass(classes.edit!);
     }
-
   }
 
 }

@@ -1,9 +1,11 @@
 import AlertComponent from "@/app/components/alert-stack/alert/alert.ts";
+import TXT from "@/app/utils/language.ts";
 import Spinner from "@/app/components/spinner/spinner.ts";
 import { isErrorAnswer, isSuccessAnswer } from "@/app/utils/validation.ts";
 import type AlertStack from "../../components/alert-stack/alert-stack.ts";
 import type { ServerAnswer } from "../../utils/type.ts";
 import type ServerResponse from "./server-response.ts";
+
 
 type reConnectCallback = () => boolean;
 
@@ -86,7 +88,7 @@ export default class Connection {
   }
 
   private onClose = (): void => {
-    this.spinner.setMessage('Lost connection with server');
+    this.spinner.setMessage(TXT.messageServerDisconnect);
     this.spinner.show();
     this.isConnectionLost = true;
     this.tryReconnect();
