@@ -10,6 +10,8 @@ import Input from "@/app/components/input/input.ts";
 import Button from "@/app/components/button/button.ts";
 import classes from "./auth.module.scss";
 
+export const MIN_LENGTH_NAME = 3;
+export const MIN_LENGTH_PASS = 4;
 
 export default class AuthPage extends BaseComponent {
   private controller: Controller | null = null;
@@ -83,13 +85,13 @@ function getValidation(field: Fields): Validation | undefined {
   switch (field) {
     case Fields.name:
       return new Validation([
-        Validation.minLengthRuleWrapper(3),
+        Validation.minLengthRuleWrapper(MIN_LENGTH_NAME),
         Validation.startsWithCapitalLetterRule,
         Validation.onlyLatinLettersRule
       ]);
     case Fields.password:
       return new Validation([
-        Validation.minLengthRuleWrapper(4),
+        Validation.minLengthRuleWrapper(MIN_LENGTH_PASS),
         Validation.hasLowerCaseRule,
         Validation.hasUpperCaseRule,
         Validation.hasNumberOrSpecialCharacterRule,
