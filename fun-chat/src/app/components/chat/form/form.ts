@@ -54,9 +54,8 @@ export default class MessageForm extends BaseComponent {
       if (this.editMessage) {
         if (this.editMessage.text !== message) {
           this.editCallback(message, this.editMessage);
-        } else {
-          this.onClose();
         }
+        this.onClose();
       } else {
         this.submitCallback(message);
       }

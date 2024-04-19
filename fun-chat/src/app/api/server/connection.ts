@@ -3,7 +3,7 @@ import TXT from "@/app/utils/language.ts";
 import Spinner from "@/app/components/spinner/spinner.ts";
 import { isErrorAnswer, isSuccessAnswer } from "@/app/utils/validation-response.ts";
 import type AlertStack from "../../components/alert-stack/alert-stack.ts";
-import type { ServerAnswer } from "../../utils/type.ts";
+import type { Callback, ServerAnswer } from "../../utils/type.ts";
 import type ServerResponse from "./server-response.ts";
 
 
@@ -22,6 +22,8 @@ export default class Connection {
   private spinner: Spinner
 
   private reConnectCallback: reConnectCallback | null = null;
+
+  private closeConnectCallback: Callback | null = null;
 
   private isConnectionLost = false;
 
@@ -44,6 +46,10 @@ export default class Connection {
 
   public setReConnectCallback(callback: reConnectCallback): void {
     this.reConnectCallback = callback;
+  }
+
+  public setCloseConnectCallback(callback: Callback): void {
+    this.closeConnectCallback = callback;
   }
 
   private getNewConnection(): void {
@@ -91,6 +97,9 @@ export default class Connection {
     this.spinner.setMessage(TXT.messageServerDisconnect);
     this.spinner.show();
     this.isConnectionLost = true;
+    if (this.closeConnectCallback) {
+      this.closeConnectCallback();
+    }
     this.tryReconnect();
   }
 

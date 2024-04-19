@@ -92,4 +92,9 @@ export default class ControllerAuth {
     return true;
   }
 
+  public closeConnection = (): void => {
+    this.store.lostConnection();
+    this.pageChat.afterLogout();
+  }
+
 }

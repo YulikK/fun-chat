@@ -59,6 +59,11 @@ export default class Store {
     return this.user;
   }
 
+  public lostConnection(): void {
+    this.message = [];
+    this.usersList = [];
+  }
+
   public userLogin(user: User): User | undefined {
     const userEl = this.usersList.find(el => el.login === user.login);
     if (userEl) {
@@ -100,12 +105,12 @@ export default class Store {
     }
     return this.usersList;
   }
-  
+
   public setActiveUsers(users: User[]): User[] {
     const otherUsers = users.filter(user => user.login !== this.user.login);
     return this.updateUsersList(otherUsers, user => !user.isLogined);
   }
-  
+
   public setInactiveUsers(users: User[]): User[] {
     return this.updateUsersList(users, user => user.isLogined);
   }

@@ -1,7 +1,8 @@
+import SRC from "@/app/utils/src.ts";
 import type { User } from "@/app/utils/type.ts";
 import { BaseComponent } from "../../base-components.ts";
 import classes from "./user.module.scss";
-import { p, span } from "../../tags.ts";
+import { img, p, span } from "../../tags.ts";
 
 export default class UserComponent extends BaseComponent{
   private user: User;
@@ -15,13 +16,14 @@ export default class UserComponent extends BaseComponent{
   private newMsg = 0;
 
   constructor(user: User) {
-    super({ tag: 'li', className: classes.user });
+    super({ tag: 'li', className: `${classes.user } ${user.isLogined ? classes.online! : ''}`});
     this.user = user;
     this.status = user.isLogined;
     this.badge = span({ className: classes.badges, textContent: this.newMsg ? this.newMsg.toString() : '' });
-    this.text = p(`${classes.tittle!} ${this.user.isLogined ? classes.online! : ''}`, this.user.login);
-    this.appendChild([this.text, this.badge]);
-    
+    this.text = p(classes.tittle!, this.user.login);
+    const userLogo = img({ src: SRC.user, alt: SRC.userAlt, className: classes.img, width: 20, height: 20 });
+    this.appendChild([userLogo, this.text, this.badge]);
+
   }
 
   public setMessageCount(count: number): void {
@@ -43,10 +45,10 @@ export default class UserComponent extends BaseComponent{
 
   public setOnline(status: boolean): void {
     this.status = status;
-    if (status && this.text) {
-      this.text.toggleClass(classes.online!);
-    } else if(this.text){
-      this.text.removeClass(classes.online!);
+    if (status) {
+      this.toggleClass(classes.online!);
+    } else {
+      this.removeClass(classes.online!);
     }
   }
 
