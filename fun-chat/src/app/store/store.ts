@@ -34,6 +34,10 @@ export default class Store {
     return this.authInfo;
   }
 
+  public isAuth(): boolean {
+    return this.authInfo.login !== null && this.authInfo.password !== null;
+  }
+
   public login(user: User): User {
     if (user.login && user.isLogined) {
       Object.assign(this.user, user);

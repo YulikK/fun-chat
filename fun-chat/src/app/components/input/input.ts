@@ -1,7 +1,5 @@
 import type { Fields } from "@/app/utils/type.ts";
 import type Validation from "@/app/utils/validation.ts";
-// import { NEED_VALIDATE } from "@/app/utils/type.ts";
-// import { validateField } from "@/app/utils/validation-response.ts";
 import { BaseComponent } from '../base-components.ts';
 import { p } from "../tags.ts";
 import classes from './input.module.scss';
@@ -23,8 +21,6 @@ export default class Input extends BaseComponent{
 
   private errorsMsg: BaseComponent | null = null;
 
-  // private isNeedValidate: boolean;
-
   private id: Fields;
 
   private validation: Validation | undefined;
@@ -35,7 +31,6 @@ export default class Input extends BaseComponent{
     this.id = id;
 
     this.validation = validation;
-    // this.isNeedValidate = NEED_VALIDATE.includes(id);
     if (errorContainer) {
       this.errorContainer = errorContainer;
     }
@@ -67,14 +62,6 @@ export default class Input extends BaseComponent{
         this.setSuccess();
       }
     }
-    // this.validation?.validate
-    // const validationResult = validateField(value, this.id);
-
-    // if (validationResult.isValid) {
-    //   this.setSuccess();
-    // } else {
-    //   this.setError(validationResult.error);
-    // }
     return isValid;
   }
 

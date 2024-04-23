@@ -1,22 +1,38 @@
+import type Controller from "../controller/controller.ts";
+import type Store from "../store/store.ts";
 import { Navigation } from "../utils/type.ts";
+
+const needAuth = [Navigation.chat];
+const needLogout = [Navigation.auth];
+
+type NavigationCallback = (page: Navigation) => void
 
 export function navigateTo(page: Navigation): void {
   window.location.hash = page;
 }
 
-export function initializeRouter(onRouteChange: (page: Navigation) => void): void {
+export function initializeRouter(onRouteChange: NavigationCallback, storeObj: Store, controller: Controller): void {
+  changePage(onRouteChange, storeObj, controller)
+
   window.addEventListener('hashchange', () => {
-    const pageString = window.location.hash.slice(1);
-    const navPage = getNavigation(pageString);
-    onRouteChange(navPage);
+    changePage(onRouteChange, storeObj, controller);
   });
 
-  if (window.location.hash !== `#${Navigation.info}`) {
+}
+
+function changePage(onRouteChange: NavigationCallback, store: Store, controller: Controller): void {
+  const isAuth = store.isAuth();
+  const pageString = window.location.hash.slice(1);
+  const navPage = getNavigation(pageString);
+
+  if (needLogout.includes(navPage)){
+    controller.ctrAuth.startLogout();
+  }
+
+  if (!isAuth && needAuth.includes(navPage)) {
     navigateTo(Navigation.auth);
     onRouteChange(Navigation.auth);
   } else {
-    const pageString = window.location.hash.slice(1);
-    const navPage = getNavigation(pageString);
     onRouteChange(navPage);
   }
 }

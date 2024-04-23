@@ -40,7 +40,6 @@ export default class ControllerAuth {
     let result = false;
     const user = this.store.getAuthInfo()
     if (user) {
-      // this.store.setAuthInfo(user);
       this.request.sendLogin(user);
       result = true;
     }
@@ -67,7 +66,8 @@ export default class ControllerAuth {
   public startLogout(): boolean {
     let result = false;
     const authInfo = this.store.getAuthInfo();
-    if (authInfo) {
+    const isAuth = this.store.isAuth();
+    if (isAuth && authInfo) {
       this.request.sendLogout(authInfo);
       result = true;
     }

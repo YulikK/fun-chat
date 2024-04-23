@@ -61,6 +61,6 @@ function render(page: Navigation, pageComponent: BaseComponent): void {
   pageContainer.append(pageComponent);
 }
 
-initializeRouter(renderPage);
+initializeRouter(renderPage, store, controller);
 
 
