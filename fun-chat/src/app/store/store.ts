@@ -1,6 +1,13 @@
 import type { Auth, Message, User } from "../utils/type.ts"
 import type Controller from "../controller/controller.ts";
 
+const version = '1.0.0';
+const app = 'fun-chat'
+const author = 'yulikk'
+const storageKey = `${author}-${version}-${app}`;
+const loginKey = 'login';
+const passwordKey = 'password';
+
 export default class Store {
   private controller: Controller | null = null;
 
@@ -18,14 +25,29 @@ export default class Store {
 
   private message: Message[] = [];
 
+  constructor() {
+    const login = sessionStorage.getItem(`${storageKey}-${loginKey}`);
+    const password = sessionStorage.getItem(`${storageKey}-${passwordKey}`);
+
+    if (login && password) {
+      this.authInfo.login = login;
+      this.authInfo.password = password;
+    }
+  }
+
   public setController(controller: Controller): Controller {
     this.controller = controller;
+    if (this.isAuth()) {
+      this.controller?.ctrAuth.reLogin();
+    }
     return this.controller;
   }
 
   public setAuthInfo(auth: Auth): Auth {
     if (auth.login && auth.password) {
       this.authInfo = auth;
+      sessionStorage.setItem(`${storageKey}-${loginKey}`, auth.login);
+      sessionStorage.setItem(`${storageKey}-${passwordKey}`, auth.password);
     }
     return this.authInfo ;
   }
@@ -54,6 +76,8 @@ export default class Store {
       this.user.login = '';
       this.authInfo.login = null;
       this.authInfo.password = null;
+      sessionStorage.removeItem(`${storageKey}-${loginKey}`);
+      sessionStorage.removeItem(`${storageKey}-${passwordKey}`);
       this.usersList = [];
       this.message = [];
       if (this.controller) {

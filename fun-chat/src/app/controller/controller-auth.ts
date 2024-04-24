@@ -2,7 +2,7 @@ import type Store from "../store/store";
 import type AuthPage from "../pages/auth/auth";
 import type { Auth, User } from "../utils/type.ts";
 import { Navigation } from "../utils/type.ts";
-import { navigateTo } from "../api/router.ts";
+import { navigateAfterLogin, navigateTo } from "../api/router.ts";
 import type Header from "../components/header/header.ts";
 import type ServerRequest from "../api/server/server-request.ts";
 import type ChatPage from "../pages/chat/chat.ts";
@@ -56,7 +56,7 @@ export default class ControllerAuth {
   }
 
   public afterLogin(user: User): boolean {
-    navigateTo(Navigation.chat);
+    navigateAfterLogin();
     this.header.changeAuth(true, user);
     this.request.sendGetActiveUsers();
     this.request.sendGetInactiveUsers();

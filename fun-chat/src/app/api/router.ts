@@ -11,6 +11,14 @@ export function navigateTo(page: Navigation): void {
   window.location.hash = page;
 }
 
+export function navigateAfterLogin(): void {
+  const pageString = window.location.hash.slice(1);
+  const navPage = getNavigation(pageString);
+  if( navPage === Navigation.auth){
+    navigateTo(Navigation.chat);
+  }
+}
+
 export function initializeRouter(onRouteChange: NavigationCallback, storeObj: Store, controller: Controller): void {
   changePage(onRouteChange, storeObj, controller)
 
