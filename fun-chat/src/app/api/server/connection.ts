@@ -1,16 +1,15 @@
-import AlertComponent from "@/app/components/alert-stack/alert/alert.ts";
-import TXT from "@/app/utils/language.ts";
-import Spinner from "@/app/components/spinner/spinner.ts";
-import { isErrorAnswer, isSuccessAnswer } from "@/app/utils/validation-response.ts";
-import type AlertStack from "../../components/alert-stack/alert-stack.ts";
-import type { Callback, ServerAnswer } from "../../utils/type.ts";
-import type ServerResponse from "./server-response.ts";
-
+import AlertComponent from '@/app/components/alert-stack/alert/alert.ts';
+import TXT from '@/app/utils/language.ts';
+import Spinner from '@/app/components/spinner/spinner.ts';
+import { isErrorAnswer, isSuccessAnswer } from '@/app/utils/validation-response.ts';
+import type AlertStack from '../../components/alert-stack/alert-stack.ts';
+import type { Callback, ServerAnswer } from '../../utils/type.ts';
+import type ServerResponse from './server-response.ts';
 
 type reConnectCallback = () => boolean;
 
+const TIME_UPDATE = 2000;
 export default class Connection {
-
   private readonly END_POINT = `ws://localhost:4000`;
 
   private alertStack: AlertStack;
@@ -19,7 +18,7 @@ export default class Connection {
 
   private connectionWS: WebSocket;
 
-  private spinner: Spinner
+  private spinner: Spinner;
 
   private reConnectCallback: reConnectCallback | null = null;
 
@@ -36,7 +35,6 @@ export default class Connection {
   }
 
   public sendMessage(message: ServerAnswer): void {
-
     if (this.connectionWS && this.connectionWS.readyState === WebSocket.OPEN) {
       this.connectionWS.send(JSON.stringify(message));
     } else {
@@ -64,7 +62,7 @@ export default class Connection {
       this.isConnectionLost = false;
       this.reConnectCallback();
     }
-  }
+  };
 
   private onError = (event: Event): void => {
     if (event instanceof ErrorEvent && event.error && typeof event.error === 'string') {
@@ -72,7 +70,7 @@ export default class Connection {
       alert.show();
       this.getNewConnection();
     }
-  }
+  };
 
   private setListeners(): void {
     this.connectionWS.addEventListener('message', this.onMessage);
@@ -91,7 +89,7 @@ export default class Connection {
         alert.show();
       }
     }
-  }
+  };
 
   private onClose = (): void => {
     this.spinner.setMessage(TXT.messageServerDisconnect);
@@ -101,21 +99,16 @@ export default class Connection {
       this.closeConnectCallback();
     }
     this.tryReconnect();
-  }
+  };
 
   private tryReconnect(): void {
     const interval = setInterval(() => {
       if (this.connectionWS.readyState === WebSocket.CLOSED) {
         this.connectionWS = new WebSocket(`${this.END_POINT}`);
         this.getNewConnection();
-
       } else {
         clearInterval(interval);
       }
-    }, 2000);
+    }, TIME_UPDATE);
   }
-
 }
-
-
-
