@@ -1,6 +1,6 @@
 # Fun-Chat App
 
-[🚀 Deploy]()
+[🚀 Deploy](https://fun-chat-yulikk.netlify.app/#info)
 
 Welcome to the Fun-Chat project! This application was created as part of the RS School course in 2024. The goal of the project is to teach the principles of working with WebSockets by developing a real-time chat application for user communication.
 
